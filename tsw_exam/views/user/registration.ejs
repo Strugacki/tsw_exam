@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>User registration</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  
+  <body>
+    <% include templates/header.ejs %>
+    <div class="content">
+        <form action="user/registration">
+            <input type="text" name="username" id=""/>
+            <input type="text" name="firstName" id=""/>
+            <input type="text" name="lastName" id=""/>
+            <input type="password" name="password" id=""/>
+            <input type="email" name="email" id="">           
+        </form>
+    </div>
+    <% include templates/footer.ejs %>
+  </body>
+</html>
