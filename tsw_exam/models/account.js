@@ -1,5 +1,6 @@
 /*jshint node: true */
 //Creates user account scheme in database(MongoDB)
+var express = require('express');
 
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema,

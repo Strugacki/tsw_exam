@@ -1,5 +1,6 @@
 var express = require('express');
-var Account = require('./models/account');
+var passport = require('passport');
+var Account = require('../models/account');
 var router = express.Router();
 
 /* GET users listing. */
@@ -8,9 +9,13 @@ router.get('/', function(req, res) {
 });
 
 router.route('/registration').get(function(req,res,next){
-   res.render('registration',{}); 
+   res.render('user/registration',{}); 
 }).post(function(req,res,next){
-   Account.register(new Account({username : req.body.username,
+   if(Account.findOne({username : req.body.username}) || Account.findOne({email : req.body.email})){
+       console.log('user with these creditentials already exists!');
+       res.render('')
+   }else{
+       Account.register(new Account({username : req.body.username,
                                 firstName : req.body.firstName,
                                 lastName : req.body.lastName,
                                 email : req.body.email}),
@@ -21,16 +26,17 @@ router.route('/registration').get(function(req,res,next){
        }
        
        console.log('user registered!');
-       res.rendirect('/');
-       
+       res.redirect('/');
    });
+   }
+   
 });
 
 router.get('/login',function(req,res){
    res.render('user/login', {user: req.user}); 
 });
 
-router.post('/login',passport.authenticate('local'), function(req, res){
+router.post('/login', passport.authenticate('local'), function(req, res){
    res.redirect('/') 
 });
 

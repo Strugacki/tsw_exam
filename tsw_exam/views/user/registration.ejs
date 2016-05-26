@@ -6,16 +6,22 @@
   </head>
   
   <body>
-    <% include templates/header.ejs %>
+    <% include ../templates/header.ejs %>
     <div class="content">
-        <form action="user/registration">
-            <input type="text" name="username" id=""/>
-            <input type="text" name="firstName" id=""/>
-            <input type="text" name="lastName" id=""/>
-            <input type="password" name="password" id=""/>
-            <input type="email" name="email" id="">           
+        <form action="/users/registration" method="post">
+           <label for="#username">Login:</label>
+            <input type="text" name="username" id="username"/>
+            <label for="#firstName">Imię:</label>
+            <input type="text" name="firstName" id="firstName"/>
+            <label for="#lastName">Nazwisko:</label>
+            <input type="text" name="lastName" id="lastName"/>
+            <label for="#password">Hasło:</label>
+            <input type="password" name="password" id="password"/>
+            <label for="#email">Adres email:</label>
+            <input type="email" name="email" id="email">
+            <input type="submit" value="Rejestruj" />           
         </form>
     </div>
-    <% include templates/footer.ejs %>
+    <% include ../templates/footer.ejs %>
   </body>
 </html>

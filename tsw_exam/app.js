@@ -23,6 +23,7 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
+
 app.use(favicon());
 app.use(logger('dev'));
 //obsługa danych typu appliction/json
@@ -38,23 +39,33 @@ app.use(session({
     secret: '$uper $ecret', //used in encrypted sessions, must be unique
     resave: true, //updated session on each view
     saveUninitialized: false //store sessions
-}))
+}));
+
 app.use(require('less-middleware')({ src: path.join(__dirname, 'public') }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'bower_components/jquery/dist')));
 
 /***************Passport and Mongo*****************/
 
+mongoose.connect('mongodb://localhost/tsw_exam', function(err) {
+  if (err) {
+    console.log('Could not connect to mongodb on localhost');
+  }
+});
+
+
 //passport configuraton for my app
 app.use(passport.initialize());
 app.use(passport.session());
+
+
+
 
 //Account model initialization
 var Account = require('./models/account');
 passport.use(Account.createStrategy());
 passport.serializeUser(Account.serializeUser());//this and below store user login
 passport.deserializeUser(Account.deserializeUser());
-
 
 app.use('/', routes);
 app.use('/users', users);
