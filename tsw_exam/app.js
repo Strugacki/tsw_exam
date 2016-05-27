@@ -7,6 +7,7 @@ var mongoose = require('mongoose');
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 
+//bunch of typical for node stuff
 var errorHandler = require('errorhandler');
 var path = require('path');
 var favicon = require('static-favicon');
@@ -14,8 +15,13 @@ var logger = require('morgan');
 var cookieSession = require('cookie-session');
 var bodyParser = require('body-parser');
 
+
+//Routes assign to variables
 var routes = require('./routes/index');
-var users = require('./routes/users');
+var user = require('./routes/user');
+var contest = require('./routes/contest');
+var horse = require('./routes/horse');
+var result = require('./routes/result');
 
 var app = express();
 
@@ -34,7 +40,8 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(require('less-middleware')({ src: path.join(__dirname, 'public') }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-
+/**************************************************/
+//Creating session 
 app.use(session({
     secret: '$uper $ecret', //used in encrypted sessions, must be unique
     resave: true, //updated session on each view
@@ -46,7 +53,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'bower_components/jquery/dist')));
 
 /***************Passport and Mongo*****************/
-
+//Connecting to mongoDB and checking if connection is OK
 mongoose.connect('mongodb://localhost/tsw_exam', function(err) {
   if (err) {
     console.log('Could not connect to mongodb on localhost');
@@ -58,17 +65,21 @@ mongoose.connect('mongodb://localhost/tsw_exam', function(err) {
 app.use(passport.initialize());
 app.use(passport.session());
 
-
-
-
+/**************************************************/
 //Account model initialization
 var Account = require('./models/account');
 passport.use(Account.createStrategy());
 passport.serializeUser(Account.serializeUser());//this and below store user login
 passport.deserializeUser(Account.deserializeUser());
 
+
+/**************************************************/
+//Adding routes to application
 app.use('/', routes);
-app.use('/users', users);
+app.use('/user', user);
+app.use('/contest', contest);
+app.use('/horse', horse);
+app.use('/result', result);
 
 /// catch 404 and forwarding to error handler
 app.use(function(req, res, next) {

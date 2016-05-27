@@ -2,16 +2,16 @@
 //Creates user account scheme in database(MongoDB)
 var express = require('express');
 
-var mongoose = require('mongoose'),
-    Schema = mongoose.Schema,
-    passportLocalMongoose = require('passport-local-mongoose');
+var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
+var passportLocalMongoose = require('passport-local-mongoose');
 
 var Account = new Schema({
-    firstName: String,
-    lastName: String,
-    login: String,
-    password: String,
-    email: String,
+    firstName: {type = String, required = true},
+    lastName: {type = String, required = true},
+    login: {type = String, required = true},
+    password: {type = String, required = true},
+    email: {type = String, required = true}
 });
 
 Account.plugin(passportLocalMongoose);
