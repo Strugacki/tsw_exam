@@ -11,24 +11,28 @@ router.get('/', function(req, res) {
 router.route('/registration').get(function(req,res,next){
    res.render('user/registration',{}); 
 }).post(function(req,res,next){
-   if(Account.findOne({username : req.body.username}) || Account.findOne({email : req.body.email})){
-       console.log('user with these creditentials already exists!');
-       res.render('')
-   }else{
+   //if(Account.findOne({email : req.body.email})){
+       //console.log('user with these creditentials already exists!');
+       //res.render('')
+  // }else{
        Account.register(new Account({username : req.body.username,
                                 firstName : req.body.firstName,
                                 lastName : req.body.lastName,
-                                email : req.body.email}),
+                                email : req.body.email,
+                                password : req.body.password,
+                                role: 'user'}),
                                req.body.password, function(err){
        if(err){
            console.log('error while user register!',err);
-           return next(err);
+           res.render('/user/registration',{account : account});
        }
-       
+       console.log('Access level user: ' + Account.hasAccess('user'));
        console.log('user registered!');
-       res.redirect('/');
+       req.login(account, function(err){
+           res.redirect('/');
+       })
    });
-   }
+  // }
    
 });
 
@@ -37,7 +41,7 @@ router.get('/login',function(req,res){
 });
 
 router.post('/login', passport.authenticate('local'), function(req, res){
-   res.redirect('/') 
+   res.redirect('/'); 
 });
 
 router.all('/logout', function(req, res){

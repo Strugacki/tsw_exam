@@ -18,7 +18,7 @@ var bodyParser = require('body-parser');
 
 //Routes assign to variables
 var routes = require('./routes/index');
-var user = require('./routes/user');
+var users = require('./routes/users');
 var contest = require('./routes/contest');
 var horse = require('./routes/horse');
 var result = require('./routes/result');
@@ -80,7 +80,7 @@ passport.deserializeUser(Account.deserializeUser());
 /**************************************************/
 //Adding routes to application
 app.use('/', routes);
-app.use('/user', user);
+app.use('/users', users);
 //app.use('/contest', contest);
 //app.use('/horse', horse);
 //app.use('/result', result);
