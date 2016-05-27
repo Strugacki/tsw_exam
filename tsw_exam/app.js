@@ -48,10 +48,14 @@ app.use(session({
     saveUninitialized: false //store sessions
 }));
 
+/**************************************************/
+//adding static references to resources
 app.use(require('less-middleware')({ src: path.join(__dirname, 'public') }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'bower_components/jquery/dist')));
-
+app.use(express.static(path.join(__dirname, 'bower_components/bootstrap/dist/css')));
+app.use(express.static(path.join(__dirname, 'bower_components/bootstrap/dist/js')));
+app.use(express.static(path.join(__dirname, 'bower_components/bootstrap/dist/fonts')));
 /***************Passport and Mongo*****************/
 //Connecting to mongoDB and checking if connection is OK
 mongoose.connect('mongodb://localhost/tsw_exam', function(err) {
@@ -77,9 +81,9 @@ passport.deserializeUser(Account.deserializeUser());
 //Adding routes to application
 app.use('/', routes);
 app.use('/user', user);
-app.use('/contest', contest);
-app.use('/horse', horse);
-app.use('/result', result);
+//app.use('/contest', contest);
+//app.use('/horse', horse);
+//app.use('/result', result);
 
 /// catch 404 and forwarding to error handler
 app.use(function(req, res, next) {
