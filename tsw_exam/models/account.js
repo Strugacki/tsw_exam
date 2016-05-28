@@ -17,10 +17,9 @@ var Account = new Schema({
 
 Account.plugin(passportLocalMongoose);
 Account.plugin(mongooseRole,{
-    roles: ['public','user','admin'],
+    roles: ['public','referee','admin'],
     accessLevels:{
-        'public': ['public','user','admin','referee'],
-        'user':['user','admin'],
+        'public': ['public','admin','referee'],
         'admin':['admin'],
         'referee':['referee','admin']
     }

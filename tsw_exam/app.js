@@ -23,6 +23,7 @@ var users = require('./routes/users');
 var contest = require('./routes/contest');
 var horse = require('./routes/horse');
 var result = require('./routes/result');
+var referee = require('./routes/referee');
 
 var app = express();
 
@@ -97,6 +98,7 @@ app.use(expressValidator({
 //Adding routes to application
 app.use('/', routes);
 app.use('/users', users);
+app.use('/referee', referee);
 //app.use('/contest', contest);
 //app.use('/horse', horse);
 //app.use('/result', result);

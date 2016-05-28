@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>TSW_EXAM</title>
+    <title>Balios</title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
     <link rel="stylesheet" href="bootstrap.css" />
     <script src="jquery.js" ></script>
@@ -9,9 +9,7 @@
   </head>
   
   <body>
-   <% if(userRole == "user"){ %>
-       <% include templates/user_header.ejs  %>
-   <% }else if(userRole == "admin"){ %>
+   <% if(userRole == "admin"){ %>
        <% include templates/admin_header.ejs  %>
    <% }else if(userRole == "referee"){ %>
        <% include templates/admin_header.ejs  %>
@@ -23,8 +21,10 @@
             <div class="panel panel-default transparent-panel">
                 <div class="panel panel-heading text-center">
                     <h1>Stadnina koni Balios</h1>
+                    <% if(msg){ %>
+                        <p class="alert alert-danger"><%= msg %></p>
+                    <% } %>
                 </div>
-                
             </div>
         </div>
     </div>

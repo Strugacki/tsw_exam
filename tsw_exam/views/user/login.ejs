@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>User login</title>
+    <title>Balios - Logowanie</title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
     <link rel="stylesheet" href="/bootstrap.css" />
     <script src="/jquery.js" ></script>
@@ -12,9 +12,12 @@
     <% include ../templates/guest_header.ejs %>
     <div class="container content">
         <div class="col-lg-6 col-lg-push-3 col-md-8 col-md-push-2 col-sm-12">
-            <div class="panel panel-default">
-                <div class="panel panel-heading text-center zindex50">
+            <div class="panel panel-default transparent-panel">
+                <div class="panel panel-heading text-center">
                     <h1>Formularz Logowania</h1>
+                    <% if(msg){ %>
+                        <p class="alert alert-danger"><%= msg %></p>
+                    <% } %>
                 </div>
                 <div class="panel panel-body">
                     <form class="form-horizontal" role="form" action="/users/login" method="post">

@@ -4,13 +4,17 @@ var expressValidator = require('express-validator');
 var Account = require('../models/account');
 var router = express.Router();
 
-/* GET users listing. */
-router.get('/', function(req, res) {
-  res.send('respond with a resource');
-});
-
-router.route('/registration').get(function(req,res,next){
-   res.render('user/registration',{errors: null}); 
+router.route('/add').get(function(req,res,next){
+    if(req.user){
+        if(req.user.hasAccess(['admin','public','referee'])){
+            console.log("ADMIN");
+            res.render('referee/add',{errors: null});    
+        }else{
+            res.render('index', {user: req.user, msg: 'Nie posiadasz odpowiednich uprawnień!'});
+        }
+    }else{
+        res.render('user/login',{user: req.user, msg: 'Zalogu się na konto administratora!'});
+    }
 }).post(function(req,res,next){
    //if(Account.findOne({email : req.body.email})){
        //console.log('user with these creditentials already exists!');
@@ -43,18 +47,12 @@ router.route('/registration').get(function(req,res,next){
            return res.render('/user/registration',{account: account, errors: validationErrors});
        }
        console.log('user registered!');
-       //req.login(account, function(err){
-       //    res.redirect('/');
-           passport.authenticate('local')(req, res, function () {
-                res.redirect('/');
-       })
-   });
-  // }
-   
+       res.redirect('/');
+   });   
 });
 
 router.get('/login',function(req,res){
-   res.render('user/login', {user: req.user, msg: null}); 
+   res.render('user/login', {user: req.user}); 
 });
 
 router.post('/login', passport.authenticate('local'), function(req, res){
