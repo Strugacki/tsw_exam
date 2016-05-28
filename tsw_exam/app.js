@@ -1,4 +1,5 @@
 var express = require('express');
+var expressValidator = require('express-validator');
 //express session handling
 var session = require('express-session');
 //mongodb
@@ -28,7 +29,6 @@ var app = express();
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
-
 
 app.use(favicon());
 app.use(logger('dev'));
@@ -76,7 +76,23 @@ passport.use(Account.createStrategy());
 passport.serializeUser(Account.serializeUser());//this and below store user login
 passport.deserializeUser(Account.deserializeUser());
 
+//express validation for our model
+app.use(expressValidator({
+  errorFormatter: function(param, msg, value) {
+      var namespace = param.split('.')
+      , root    = namespace.shift()
+      , formParam = root;
 
+    while(namespace.length) {
+      formParam += '[' + namespace.shift() + ']';
+    }
+    return {
+      param : formParam,
+      msg   : msg,
+      value : value
+    };
+  }
+}));
 /**************************************************/
 //Adding routes to application
 app.use('/', routes);

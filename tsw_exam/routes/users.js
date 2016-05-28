@@ -1,5 +1,6 @@
 var express = require('express');
 var passport = require('passport');
+var expressValidator = require('express-validator');
 var Account = require('../models/account');
 var router = express.Router();
 
@@ -15,6 +16,21 @@ router.route('/registration').get(function(req,res,next){
        //console.log('user with these creditentials already exists!');
        //res.render('')
   // }else{
+  /*  var username = req.body.username;
+    var firstName = req.body.firstName;
+    var lastName = req.body.lastName;
+    var email = req.body.email;
+    var password = req.body.password;
+    var password1 = req.body.password1;
+    
+    req.checkBody('username', 'Pole login nie może być puste!').notEmpty();
+    req.checkBody('firstName','Pole z imieniem nie może być puste!').notEmpty();
+    req.checkBody('lastName','Pole z nazwiskiem nie może być puste!').notEmpty();
+    req.checkBody('email','Podaj poprawny adres email!').isEmail();
+    req.checkBody('email','Pole z adresem email nie może być puste!').notEmpty();
+    req.checkBody('password','Pole hasło nie może być puste!').notEmpty();
+    req.checkBody('password1','Hasła nie pasują!').equals(req.body.password);*/
+    //var validationErrors = req.validationErrors();
        Account.register(new Account({username : req.body.username,
                                 firstName : req.body.firstName,
                                 lastName : req.body.lastName,
@@ -24,12 +40,13 @@ router.route('/registration').get(function(req,res,next){
                                req.body.password, function(err){
        if(err){
            console.log('error while user register!',err);
-           res.render('/user/registration',{account : account});
+           return res.render('/user/registration',{account: account});
        }
-       console.log('Access level user: ' + Account.hasAccess('user'));
        console.log('user registered!');
-       req.login(account, function(err){
-           res.redirect('/');
+       //req.login(account, function(err){
+       //    res.redirect('/');
+           passport.authenticate('local')(req, res, function () {
+                res.redirect('/');
        })
    });
   // }
@@ -41,6 +58,7 @@ router.get('/login',function(req,res){
 });
 
 router.post('/login', passport.authenticate('local'), function(req, res){
+    console.log("Access: " + req.user.hasAccess('user'));
    res.redirect('/'); 
 });
 

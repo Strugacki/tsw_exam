@@ -19,9 +19,10 @@ Account.plugin(passportLocalMongoose);
 Account.plugin(mongooseRole,{
     roles: ['public','user','admin'],
     accessLevels:{
-        'public': ['public','user','admin'],
+        'public': ['public','user','admin','referee'],
         'user':['user','admin'],
-        'admin':['admin']
+        'admin':['admin'],
+        'referee':['referee','admin']
     }
 })
 module.exports = mongoose.model('Account', Account);
