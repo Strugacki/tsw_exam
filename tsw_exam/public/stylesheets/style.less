@@ -7,6 +7,9 @@ body {
   min-height: 100vh;
   position: relative;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  background-image: url(../images/background.jpg);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
     &>div.content{
         height: 70vh;
         padding-top: 8vh;
@@ -21,9 +24,24 @@ body {
     bottom: 0;
     left: 0;
     right: 0;
+    &>div{
+        a{
+            padding: 5px;
+        }
+        a:hover{
+            text-decoration: none;
+        }
+    }
+    &>p{
+        padding: 5px;
+        color: #FFF;
+    }
 }
 
 a {
   color: #00B7FF;
 }
 
+.zindex50{
+ z-index: -1 !important;
+}
