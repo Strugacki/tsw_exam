@@ -36,7 +36,7 @@ router.route('/registration').get(function(req,res,next){
                                 lastName : req.body.lastName,
                                 email : req.body.email,
                                 password : req.body.password,
-                                role: 'admin'}),
+                                role: 'referee'}),
                                req.body.password, function(err){
        if(err){
            console.log('error while user register!',err);

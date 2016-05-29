@@ -8,7 +8,7 @@ router.route('/add').get(function(req,res,next){
     if(req.user){
         if(req.user.hasAccess(['admin','public','referee'])){
             console.log("ADMIN");
-            res.render('referee/add',{errors: null});    
+            res.render('referee/add',{user: req.user, errors: null});    
         }else{
             res.render('index', {user: req.user, msg: 'Nie posiadasz odpowiednich uprawnień!'});
         }
@@ -40,7 +40,8 @@ router.route('/add').get(function(req,res,next){
                                 lastName : req.body.lastName,
                                 email : req.body.email,
                                 password : req.body.password,
-                                role: 'admin'}),
+                                role: 'referee',
+                                isActive: true}),
                                req.body.password, function(err){
        if(err){
            console.log('error while user register!',err);
@@ -51,17 +52,20 @@ router.route('/add').get(function(req,res,next){
    });   
 });
 
-router.get('/login',function(req,res){
-   res.render('user/login', {user: req.user}); 
-});
-
-router.post('/login', passport.authenticate('local'), function(req, res){
-   res.redirect('/'); 
-});
-
-router.all('/logout', function(req, res){
-    req.logout();
-    res.redirect('/');
+router.get('/list',function(req,res){
+    if(req.user){
+        if(req.user.hasAccess(['admin','public','referee'])){
+            console.log("ADMIN");
+            Account.find({role: 'referee'}).lean().exec(function(err,referees){
+               console.log(JSON.stringify(referees)); 
+               res.render('referee/list',{user: req.user, errors: null, data: referees});  
+            });  
+        }else{
+            res.render('index', {user: req.user, msg: 'Nie posiadasz odpowiednich uprawnień!'});
+        }
+    }else{
+        res.render('user/login',{user: req.user, msg: 'Zalogu się na konto administratora!'});
+    }
 });
 
 module.exports = router;
