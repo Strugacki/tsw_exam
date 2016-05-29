@@ -7,7 +7,6 @@ var mongoose = require('mongoose');
 //authorization library for app
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
-
 //bunch of typical for node stuff
 var errorHandler = require('errorhandler');
 var path = require('path');
@@ -15,6 +14,7 @@ var favicon = require('static-favicon');
 var logger = require('morgan');
 var cookieSession = require('cookie-session');
 var bodyParser = require('body-parser');
+
 
 
 //Routes assign to variables
@@ -26,6 +26,8 @@ var result = require('./routes/result');
 var referee = require('./routes/referee');
 
 var app = express();
+//adding socket.io to app
+app.io = require('socket.io')();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -134,5 +136,10 @@ app.use(function(err, req, res, next) {
     });
 });
 
+
+//Socket.io listener for app
+app.io.on('connection', function(socket){
+    console.log('User connected to server');
+});
 
 module.exports = app;

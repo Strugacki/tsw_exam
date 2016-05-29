@@ -36,7 +36,8 @@ router.route('/registration').get(function(req,res,next){
                                 lastName : req.body.lastName,
                                 email : req.body.email,
                                 password : req.body.password,
-                                role: 'referee'}),
+                                role: 'admin',
+                                isActive: true}),
                                req.body.password, function(err){
        if(err){
            console.log('error while user register!',err);
@@ -58,7 +59,12 @@ router.get('/login',function(req,res){
 });
 
 router.post('/login', passport.authenticate('local'), function(req, res){
-   res.redirect('/'); 
+    if(!req.user.isActive){
+        req.logout();
+        res.render('user/login', {user: req.user, msg: 'Twoje konto nie jest aktywne. Skontaktuj się z adminitratorem!'}); 
+    }else{
+       res.redirect('/');  
+    }
 });
 
 router.all('/logout', function(req, res){

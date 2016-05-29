@@ -73,11 +73,13 @@ router.get('/list',function(req,res){
 
 
 //Editing an existing Referee(User)
-router.get('/referee/edit/:referee_id',function(req,res){
+router.get('/edit/:referee_id',function(req,res){
      if(req.user){
         if(req.user.hasAccess(['admin','public','referee'])){
             console.log("ADMIN");
-            //TO-DO   
+            Account.findOne({role: 'referee', _id:req.params.referee_id},function(err,referee){
+                res.render('referee/edit',{user: req.user, referee: referee, errors: null});
+            });
         }else{
             res.render('index', {user: req.user, msg: 'Nie posiadasz odpowiednich uprawnień!'});
         }
@@ -86,25 +88,49 @@ router.get('/referee/edit/:referee_id',function(req,res){
     }
 });
 
+router.post('/edit/:referee_id',function(req,res){
+    console.log(req.params.referee_id);
+    Account.findById(req.params.referee_id,function(err,referee){
+        referee.update({
+            username : req.body.username,
+            firstName : req.body.firstName,
+            lastName : req.body.lastName,
+            email : req.body.email,
+            password : req.body.password
+        }, function(error){
+            console.log('dupe');
+            res.render('referee/edit/',{user: req.user, referee: referee, errors: 'Nie udało się dokonać aktualizacji!'});
+        });
+        if(err){
+            console.log('dupe');
+            res.render('referee/edit/',{user: req.user, referee: referee, errors: 'Nie udało się dokonać aktualizacji!'});
+        }else{
+            res.redirect('/referee/list');
+        }
+    });
+});
+
+
 //Activate Referee's Account
 router.get('/activate/:referee_id',function(req,res){
+     console.log(req.params);
      if(req.user){
         if(req.user.hasAccess(['admin','public','referee'])){
             console.log("ADMIN");
-            console.log("ACTIVATING ACCOUNT");
+            console.log("DEACTIVATING ACCOUNT");
             Account.findOne({role: 'referee',isActive: false, _id:req.params.referee_id},function(err,referee){
                 referee.isActive = true;
                 referee.save(function(err){
                    if(!err){
                        console.log("ACCOUNT ACTIVATED");
+                       Account.find({role: 'referee'}).lean().exec(function(err,tableData){
+                           res.json(tableData);  
+                        }); 
                    }else{
                        console.log(err);
                    }
                 });
             });
-            Account.find({role: 'referee'}).lean().exec(function(err,data){
-               res.json(data);  
-            }); 
             //TO-DO   
         }else{
             res.render('index', {user: req.user, msg: 'Nie posiadasz odpowiednich uprawnień!'});
@@ -126,14 +152,14 @@ router.get('/deactivate/:referee_id',function(req,res){
                 referee.save(function(err){
                    if(!err){
                        console.log("ACCOUNT DEACTIVATED");
+                       Account.find({role: 'referee'}).lean().exec(function(err,tableData){
+                           res.json(tableData);  
+                        }); 
                    }else{
                        console.log(err);
                    }
                 });
             });
-            Account.find({role: 'referee'}).lean().exec(function(err,tableData){
-               res.json(tableData);  
-            }); 
             //TO-DO   
         }else{
             res.render('index', {user: req.user, msg: 'Nie posiadasz odpowiednich uprawnień!'});

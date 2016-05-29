@@ -14,6 +14,8 @@ router.get('/', function(req, res) {
                 console.log('REFEREE');
                 role = 'referee';
                 if(req.user.hasAccess('admin')){
+                    console.log(req.user.username);
+                    console.log(req.user);
                     console.log('ADMIN');
                     role = 'admin';
                 }
