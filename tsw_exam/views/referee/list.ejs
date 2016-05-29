@@ -40,9 +40,9 @@
                         <% } %>
                         <td><a href="/referee/edit:<%= data[i]._id %>" class="btn btn-primary">Edytuj</a>
                         <% if(data[i].isActive){ %>
-                         <a href="/referee/deactivate:<%= data[i]._id %>" class="btn btn-warning">Dezaktywuj</a>
+                         <a href="/referee/deactivate/<%= data[i]._id %>" class="btn btn-warning">Dezaktywuj</a>
                         <% }else{ %>
-                         <a href="/referee/activate:<%= data[i]._id %>" class="btn btn-success">Aktywuj</a>
+                         <a href="/referee/activate/<%= data[i]._id %>" class="btn btn-success">Aktywuj</a>
                         <% } %>
                         </td>
                       </tr>

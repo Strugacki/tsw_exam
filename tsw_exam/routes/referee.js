@@ -4,6 +4,7 @@ var expressValidator = require('express-validator');
 var Account = require('../models/account');
 var router = express.Router();
 
+//Adding a new Referee(Account) to database
 router.route('/add').get(function(req,res,next){
     if(req.user){
         if(req.user.hasAccess(['admin','public','referee'])){
@@ -52,6 +53,8 @@ router.route('/add').get(function(req,res,next){
    });   
 });
 
+
+//Getting a list of Referees(Account) from Database and displaying in table
 router.get('/list',function(req,res){
     if(req.user){
         if(req.user.hasAccess(['admin','public','referee'])){
@@ -60,6 +63,78 @@ router.get('/list',function(req,res){
                console.log(JSON.stringify(referees)); 
                res.render('referee/list',{user: req.user, errors: null, data: referees});  
             });  
+        }else{
+            res.render('index', {user: req.user, msg: 'Nie posiadasz odpowiednich uprawnień!'});
+        }
+    }else{
+        res.render('user/login',{user: req.user, msg: 'Zalogu się na konto administratora!'});
+    }
+});
+
+
+//Editing an existing Referee(User)
+router.get('/referee/edit/:referee_id',function(req,res){
+     if(req.user){
+        if(req.user.hasAccess(['admin','public','referee'])){
+            console.log("ADMIN");
+            //TO-DO   
+        }else{
+            res.render('index', {user: req.user, msg: 'Nie posiadasz odpowiednich uprawnień!'});
+        }
+    }else{
+        res.render('user/login',{user: req.user, msg: 'Zalogu się na konto administratora!'});
+    }
+});
+
+//Activate Referee's Account
+router.get('/activate/:referee_id',function(req,res){
+     if(req.user){
+        if(req.user.hasAccess(['admin','public','referee'])){
+            console.log("ADMIN");
+            console.log("ACTIVATING ACCOUNT");
+            Account.findOne({role: 'referee',isActive: false, _id:req.params.referee_id},function(err,referee){
+                referee.isActive = true;
+                referee.save(function(err){
+                   if(!err){
+                       console.log("ACCOUNT ACTIVATED");
+                   }else{
+                       console.log(err);
+                   }
+                });
+            });
+            Account.find({role: 'referee'}).lean().exec(function(err,data){
+               res.json(data);  
+            }); 
+            //TO-DO   
+        }else{
+            res.render('index', {user: req.user, msg: 'Nie posiadasz odpowiednich uprawnień!'});
+        }
+    }else{
+        res.render('user/login',{user: req.user, msg: 'Zalogu się na konto administratora!'});
+    }
+});
+
+//Deactivate Referee's Account
+router.get('/deactivate/:referee_id',function(req,res){
+    console.log(req.params);
+     if(req.user){
+        if(req.user.hasAccess(['admin','public','referee'])){
+            console.log("ADMIN");
+            console.log("DEACTIVATING ACCOUNT");
+            Account.findOne({role: 'referee',isActive: true, _id:req.params.referee_id},function(err,referee){
+                referee.isActive = false;
+                referee.save(function(err){
+                   if(!err){
+                       console.log("ACCOUNT DEACTIVATED");
+                   }else{
+                       console.log(err);
+                   }
+                });
+            });
+            Account.find({role: 'referee'}).lean().exec(function(err,tableData){
+               res.json(tableData);  
+            }); 
+            //TO-DO   
         }else{
             res.render('index', {user: req.user, msg: 'Nie posiadasz odpowiednich uprawnień!'});
         }
