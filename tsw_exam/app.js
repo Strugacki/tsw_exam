@@ -102,7 +102,7 @@ app.use('/', routes);
 app.use('/users', users);
 app.use('/referee', referee);
 //app.use('/contest', contest);
-//app.use('/horse', horse);
+app.use('/horse', horse);
 //app.use('/result', result);
 
 /// catch 404 and forwarding to error handler

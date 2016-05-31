@@ -6,12 +6,17 @@ var router = express.Router();
 
 //Adding a new Referee(Account) to database
 router.route('/add').get(function(req,res,next){
+    var role = 'public';
     if(req.user){
         if(req.user.hasAccess(['admin','public','referee'])){
             console.log("ADMIN");
             res.render('referee/add',{user: req.user, errors: null});    
         }else{
-            res.render('index', {user: req.user, msg: 'Nie posiadasz odpowiednich uprawnień!'});
+            if(req.user.hasAccess('referee')){
+                console.log('REFEREE');
+                role = 'referee';
+            }
+            res.render('index', {user: req.user, userRole: role, msg: 'Nie posiadasz odpowiednich uprawnień!'});
         }
     }else{
         res.render('user/login',{user: req.user, msg: 'Zalogu się na konto administratora!'});
@@ -56,6 +61,7 @@ router.route('/add').get(function(req,res,next){
 
 //Getting a list of Referees(Account) from Database and displaying in table
 router.get('/list',function(req,res){
+    var role = 'public';
     if(req.user){
         if(req.user.hasAccess(['admin','public','referee'])){
             console.log("ADMIN");
@@ -64,7 +70,11 @@ router.get('/list',function(req,res){
                res.render('referee/list',{user: req.user, errors: null, data: referees});  
             });  
         }else{
-            res.render('index', {user: req.user, msg: 'Nie posiadasz odpowiednich uprawnień!'});
+            if(req.user.hasAccess('referee')){
+                console.log('REFEREE');
+                role = 'referee';
+            }
+            res.render('index', {user: req.user,userRole: role, msg: 'Nie posiadasz odpowiednich uprawnień!'});
         }
     }else{
         res.render('user/login',{user: req.user, msg: 'Zalogu się na konto administratora!'});
@@ -74,6 +84,7 @@ router.get('/list',function(req,res){
 
 //Editing an existing Referee(User)
 router.get('/edit/:referee_id',function(req,res){
+     var role = 'public';
      if(req.user){
         if(req.user.hasAccess(['admin','public','referee'])){
             console.log("ADMIN");
@@ -81,7 +92,11 @@ router.get('/edit/:referee_id',function(req,res){
                 res.render('referee/edit',{user: req.user, referee: referee, errors: null});
             });
         }else{
-            res.render('index', {user: req.user, msg: 'Nie posiadasz odpowiednich uprawnień!'});
+            if(req.user.hasAccess('referee')){
+                console.log('REFEREE');
+                role = 'referee';
+            }
+            res.render('index', {user: req.user,userRole: role, msg: 'Nie posiadasz odpowiednich uprawnień!'});
         }
     }else{
         res.render('user/login',{user: req.user, msg: 'Zalogu się na konto administratora!'});
@@ -113,6 +128,7 @@ router.post('/edit/:referee_id',function(req,res){
 
 //Activate Referee's Account
 router.get('/activate/:referee_id',function(req,res){
+     var role = 'public';
      console.log(req.params);
      if(req.user){
         if(req.user.hasAccess(['admin','public','referee'])){
@@ -133,6 +149,10 @@ router.get('/activate/:referee_id',function(req,res){
             });
             //TO-DO   
         }else{
+            if(req.user.hasAccess('referee')){
+                console.log('REFEREE');
+                role = 'referee';
+            }
             res.render('index', {user: req.user, msg: 'Nie posiadasz odpowiednich uprawnień!'});
         }
     }else{
@@ -142,6 +162,7 @@ router.get('/activate/:referee_id',function(req,res){
 
 //Deactivate Referee's Account
 router.get('/deactivate/:referee_id',function(req,res){
+    var role = 'public';
     console.log(req.params);
      if(req.user){
         if(req.user.hasAccess(['admin','public','referee'])){
@@ -162,7 +183,11 @@ router.get('/deactivate/:referee_id',function(req,res){
             });
             //TO-DO   
         }else{
-            res.render('index', {user: req.user, msg: 'Nie posiadasz odpowiednich uprawnień!'});
+            if(req.user.hasAccess('referee')){
+                console.log('REFEREE');
+                role = 'referee';
+            }
+            res.render('index', {user: req.user,userRole: role, msg: 'Nie posiadasz odpowiednich uprawnień!'});
         }
     }else{
         res.render('user/login',{user: req.user, msg: 'Zalogu się na konto administratora!'});
