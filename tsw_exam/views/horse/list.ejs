@@ -34,9 +34,9 @@
                 <% } %>
                 <td><a id="horseEdit" href="/horse/edit/<%= data[i]._id %>" class="btn btn-primary">Edytuj</a>
                 <% if(data[i].isActive){ %>
-                    <a href="/horse/activation/<%= data[i]._id %>" id="activation" class="btn btn-warning">Zawieś</a>
+                    <a id="horseActivator" href="/horse/activator/<%= data[i]._id %>" id="activation" class="btn btn-warning">Zawieś</a>
                 <% }else{ %>
-                 <a href="/horse/activation/<%= data[i]._id %>" id="activation" class="btn btn-success">Dopuść</a>
+                 <a id="horseActivator" href="/horse/activator/<%= data[i]._id %>" id="activation" class="btn btn-success">Dopuść</a>
                 <% } %>
                 </td>
               </tr>

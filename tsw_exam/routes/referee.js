@@ -200,18 +200,23 @@ router.get('/activator/:referee_id',function(req,res){
         if(req.user.hasAccess(['admin','public','referee'])){
             console.log("ADMIN");
             console.log("DEACTIVATING ACCOUNT");
-            Account.findOne({role: 'referee',isActive: true, _id:req.params.referee_id},function(err,referee){
-                referee.isActive = false;
-                referee.save(function(err){
-                   if(!err){
-                       console.log("ACCOUNT DEACTIVATED");
-                       Account.findOne({_id: req.params.referee_id, role: 'referee'}).lean().exec(function(err,referee){
-                            res.json(referee);
-                        });
-                   }else{
-                       console.log(err);
-                   }
+            var value = false;
+            Account.findOne({role: 'referee', _id: req.params.referee_id},function(err,referee){
+                console.log(referee.isActive);
+                if(referee.isActive){
+                    value = false;
+                    console.log(value);
+                }else{
+                    console.log(value);
+                    value = true;
+                }
+                referee.update({isActive: value}, function(error){
+                    console.log('dupe');
+                    console.log(error);
                 });
+                Account.find({role: 'referee'}).lean().exec(function(err,referees){
+                res.json(referees);
+            });
             });
             //TO-DO   
         }else{

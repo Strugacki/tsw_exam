@@ -23,9 +23,9 @@
                 <td><%= data[i].username %></td>
                 <td><%= data[i].email %></td>
                 <% if(data[i].isActive){ %>
-                 <td>Aktywne</td>
+                 <td id="status">Aktywne</td>
                 <% }else{ %>
-                 <td>Nieaktywne</td>
+                 <td id="status">Nieaktywne</td>
                 <% } %>
                 <td><a id="refereeEdit" href="/referee/edit/<%= data[i]._id %>" class="btn btn-primary">Edytuj</a>
                 <% if(data[i].isActive){ %>

@@ -1,62 +1,63 @@
 /******************************REFEREE MANAGEMENT***************************/
 
-/* GET ALL REFEREES */
+//GET ALL REFEREES
 var refereeManager = function(){
-        $('a#refereeList').click(function(e){
-        e.preventDefault();
-        var requestUrl =$(this).attr('href');
+    //GET ALL REFEREES
+    $('a#refereeList').click(function(e){
+    e.preventDefault();
+    var requestUrl =$(this).attr('href');
+    $.ajax({
+        url: requestUrl,
+        method: 'GET',
+        dataType: 'JSON'
+    }).done(function(data){
+        $('div#content-panel').remove();
+        //console.log(data);
+        var html = new EJS({url: 'referee/list.ejs'}).render({data: data});
+        $('div.container').append(html);
+    });
+    });
+    
+    /* GET AND POST EDIT REFEREE FORM */
+    $('a#refereeEdit').on('click',function(e){
+       e.preventDefault();
+        var getUrl =$(this).attr('href');
         $.ajax({
-            url: requestUrl,
+            url: getUrl,
             method: 'GET',
-            dataType: 'JSON'
+            dataType: 'JSON',
         }).done(function(data){
             $('div#content-panel').remove();
-            //console.log(data);
-            var html = new EJS({url: 'referee/list.ejs'}).render({data: data});
+            var html = new EJS({url: 'referee/edit.ejs'}).render({referee: data});
             $('div.container').append(html);
 
-
-            /* GET UPDATE REFEREE FORM */
-            $('a#refereeEdit').on('click',function(e){
-               e.preventDefault();
-                var getUrl =$(this).attr('href');
+            /* SUBMITING UPDATING FORM */
+            //works with post method
+            $('form').submit(function(e){
+                e.preventDefault();
+                var data = {};
+                data.username = $('input#username').val();
+                data.firstName = $('input#firstName').val();
+                data.lastName = $('input#lastName').val();
+                data.email = $('input#email').val();
+                data.password = $('input#password').val();
+                data.password1 = $('input#password1').val();
                 $.ajax({
-                    url: getUrl,
-                    method: 'GET',
+                    url: $(this).attr('action'),
+                    method: 'POST',
                     dataType: 'JSON',
+                    data: JSON.stringify(data),
+                    contentType: "application/json",
                 }).done(function(data){
-                    $('div#content-panel').remove();
-                    var html = new EJS({url: 'referee/edit.ejs'}).render({referee: data});
+                     $('div#content-panel').remove();
+                    var html = new EJS({url: 'referee/list.ejs'}).render({data: data});
                     $('div.container').append(html);
-
-                    /* SUBMITING UPDATING FORM */
-                    //works with post method
-                    $('form').submit(function(e){
-                        e.preventDefault();
-                        var data = {};
-                        data.username = $('input#username').val();
-                        data.firstName = $('input#firstName').val();
-                        data.lastName = $('input#lastName').val();
-                        data.email = $('input#email').val();
-                        data.password = $('input#password').val();
-                        data.password1 = $('input#password1').val();
-                        $.ajax({
-                            url: $(this).attr('action'),
-                            method: 'POST',
-                            dataType: 'JSON',
-                            data: JSON.stringify(data),
-                            contentType: "application/json",
-                        }).done(function(data){
-                             $('div#content-panel').remove();
-                            var html = new EJS({url: 'referee/list.ejs'}).render({data: data});
-                            $('div.container').append(html);
-                        });
-                    });
                 });
             });
         });
     });
     
+    //GET AND POST ADD REFEREE FORM
     $('a#refereeAdd').each(function(){
         $(this).on('click',function(e){
         e.preventDefault();
@@ -104,12 +105,27 @@ var refereeManager = function(){
             method: 'GET',
             dataType: 'JSON',
         }).done(function(data){
-
+            /*if($(this).hasClass('btn-warning')){
+                $(this).removeClass('btn-warning');
+                $(this).addClass('btn-success');
+                $(this).text('Dezaktywuj');
+                $(this).closest('td#status').text('Aktywny');
+            }else{
+                $(this).removeClass('btn-success');
+                $(this).addClass('btn-warning');
+                $(this).text('Aktywuj');
+                $(this).closest('td#status').text('Nieaktywny');
+            }*/
+            $('div#content-panel').remove();
+            var html = new EJS({url: 'referee/list.ejs'}).render({data: data});
+            $('div.container').append(html);
         });
             
         });
     });
-    
+
+/******************************HORSE MANAGEMENT*****************************/
+    //GET ALL HORSES
     $('a#horseList').click(function(e){
     e.preventDefault();
     var requestUrl =$(this).attr('href');
@@ -122,9 +138,10 @@ var refereeManager = function(){
         //console.log(data);
         var html = new EJS({url: 'horse/list.ejs'}).render({data: data});
         $('div.container').append(html);
-
-
-        /* GET UPDATE REFEREE FORM */
+    });
+    });
+    
+    /* GET AND POST EDIT HORSE FORM */
         $('a#horseEdit').on('click',function(e){
            e.preventDefault();
             var getUrl =$(this).attr('href');
@@ -161,9 +178,8 @@ var refereeManager = function(){
                 });
             });
         });
-    });
-    });
     
+    //GET AND POST ADD HORSE FORM
     $('a#horseAdd').each(function(){
         $(this).on('click',function(e){
         e.preventDefault();
@@ -197,6 +213,23 @@ var refereeManager = function(){
                 });
             });
         });
+        });
+    });
+    
+     $('a#horseActivator').each(function(){
+        $(this).on('click',function(e){
+        e.preventDefault();
+        var requestUrl =$(this).attr('href');;
+        $.ajax({
+            url: requestUrl,
+            method: 'GET',
+            dataType: 'JSON',
+        }).done(function(data){
+            $('div#content-panel').remove();
+            var html = new EJS({url: 'horse/list.ejs'}).render({data: data});
+            $('div.container').append(html);
+        });
+            
         });
     });
 }
