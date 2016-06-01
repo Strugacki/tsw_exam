@@ -1,3 +1,14 @@
+//SSL https
+var fs = require('fs');
+var https = require('https');
+
+var options = {
+    key: fs.readFileSync('./file.pem'),
+    cert: fs.readFileSync('./file.crt')
+}
+
+var serverPort = 3000;
+
 var express = require('express');
 var expressValidator = require('express-validator');
 //express session handling
@@ -27,8 +38,8 @@ var referee = require('./routes/referee');
 
 var app = express();
 //adding socket.io to app
-app.io = require('socket.io')();
-
+var server = https.createServer(options,app);
+var io = require('socket.io')(server);
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -140,8 +151,13 @@ app.use(function(err, req, res, next) {
 
 
 //Socket.io listener for app
-app.io.on('connection', function(socket){
+io.on('connection', function(socket){
     console.log('User connected to server');
+    socket.emit('message','new connection');
+});
+
+server.listen(serverPort,function(){
+    console.log("Server running at port: "+serverPort);
 });
 
 module.exports = app;

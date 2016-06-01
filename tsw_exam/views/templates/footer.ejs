@@ -9,5 +9,10 @@
 </div>
 <script src="/socket.io/socket.io.js"></script>
 <script>  
-  var socket = io();
+    var URL_SERVER = "https://localhost:3000";
+    var socket = io.connect(URL_SERVER);
+
+    socket.on("message",function(data){
+    console.log(data); 
+    });
 </script>  
