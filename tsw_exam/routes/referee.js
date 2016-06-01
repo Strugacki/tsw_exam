@@ -137,9 +137,9 @@ router.get('/activate/:referee_id',function(req,res){
                 referee.save(function(err){
                    if(!err){
                        console.log("ACCOUNT ACTIVATED");
-                       Account.find({role: 'referee'}).lean().exec(function(err,tableData){
-                           res.json(tableData);  
-                        }); 
+                       Account.find({role: 'referee'}).lean().exec(function(err,referees){
+                            res.json(referees);
+                        });
                    }else{
                        console.log(err);
                    }
@@ -171,9 +171,9 @@ router.get('/deactivate/:referee_id',function(req,res){
                 referee.save(function(err){
                    if(!err){
                        console.log("ACCOUNT DEACTIVATED");
-                       Account.find({role: 'referee'}).lean().exec(function(err,tableData){
-                           res.json(tableData);  
-                        }); 
+                       Account.find({role: 'referee'}).lean().exec(function(err,referees){
+                            res.json(referees);
+                        });
                    }else{
                        console.log(err);
                    }
