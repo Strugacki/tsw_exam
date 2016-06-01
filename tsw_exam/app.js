@@ -55,7 +55,9 @@ app.use(session({
 //adding static references to resources
 app.use(require('less-middleware')({ src: path.join(__dirname, 'public') }));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'views')));
 app.use(express.static(path.join(__dirname, 'bower_components/jquery/dist')));
+app.use(express.static(path.join(__dirname, 'bower_components/ejs')));
 app.use(express.static(path.join(__dirname, 'bower_components/bootstrap/dist/css')));
 app.use(express.static(path.join(__dirname, 'bower_components/bootstrap/dist/js')));
 app.use(express.static(path.join(__dirname, 'bower_components/bootstrap/dist/fonts')));

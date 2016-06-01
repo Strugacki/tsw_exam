@@ -1,74 +1,53 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Balios - aktualizacji Sędziego</title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-    <link rel="stylesheet" href="/bootstrap.css" />
-    <script src="/jquery.js" ></script>
-    <script src="/bootstrap.js" ></script>
-  </head>
-  
-  <body>
-    <% include ../templates/admin_header.ejs %>
-    <div class="container content">
-        <div class="col-lg-6 col-lg-push-3 col-md-8 col-md-push-2 col-sm-12">
-            <div class="panel panel-default">
-                <div class="panel panel-heading text-center">
-                    <h1>Formularz edycji Sędziego</h1>
-                    <% if(errors){ %>
-                        <% errors.forEach(function(error){ %>
-                            dupa
-                        <% })} %>
-                </div>
-                <div class="panel panel-body">
-                    <form class="form-horizontal" role="form" action="/referee/edit/<%= referee._id %>" method="post">
-                   <div class="form-group">
-                      <label class="control-label col-sm-2" for="firstname">Imię:</label>
-                      <div class="col-sm-10">
-                        <input name="firstName" type="text" class="form-control" id="firstname" placeholder="Podaj imię" value="<%= referee.firstName %>">
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label class="control-label col-sm-2" for="lastName">Nazwisko:</label>
-                      <div class="col-sm-10">
-                        <input name="lastName" type="text" class="form-control" id="lastName" placeholder="Podaj nazwisko" value="<%= referee.lastName %>">
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label class="control-label col-sm-2" for="username">Login:</label>
-                      <div class="col-sm-10">
-                        <input name="username" type="text" class="form-control" id="username" placeholder="Podaj login" value="<%= referee.username %>">
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label class="control-label col-sm-2" for="password">Hasło:</label>
-                      <div class="col-sm-10">          
-                        <input name="password" type="password" class="form-control" id="password" placeholder="Podaj hasło" value="<%= referee.password %>">
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label class="control-label col-sm-2" for="password1">Powtórz hasło:</label>
-                      <div class="col-sm-10">          
-                        <input name="password1" type="password" class="form-control" id="password1" placeholder="Podaj hasło">
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label class="control-label col-sm-2" for="email">Email:</label>
-                      <div class="col-sm-10">
-                        <input name="email" type="email" class="form-control" id="email" placeholder="Podaj email" value="<%= referee.email %>">
-                      </div>
-                    </div>
-                    <hr />
-                    <div class="form-group">        
-                      <div class="col-sm-offset-2 col-sm-10">
-                        <button type="submit" class="btn btn-default pull-right">Aktualizuj</button>
-                      </div>
-                    </div>
-                </form>
-                </div>
+<div id="content-panel" class="col-lg-6 col-lg-push-3 col-md-8 col-md-push-2 col-sm-12">
+    <div class="panel panel-default">
+        <div class="panel panel-heading text-center">
+            <h1>Formularz edycji Sędziego</h1>
+        </div>
+        <div class="panel panel-body">
+            <form class="form-horizontal" role="form" action="/referee/edit/<%= referee._id %>" method="post">
+           <div class="form-group">
+              <label class="control-label col-sm-2" for="firstname">Imię:</label>
+              <div class="col-sm-10">
+                <input name="firstName" type="text" class="form-control" id="firstName" placeholder="Podaj imię" value="<%= referee.firstName %>">
+              </div>
             </div>
+            <div class="form-group">
+              <label class="control-label col-sm-2" for="lastName">Nazwisko:</label>
+              <div class="col-sm-10">
+                <input name="lastName" type="text" class="form-control" id="lastName" placeholder="Podaj nazwisko" value="<%= referee.lastName %>">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="control-label col-sm-2" for="username">Login:</label>
+              <div class="col-sm-10">
+                <input name="username" type="text" class="form-control" id="username" placeholder="Podaj login" value="<%= referee.username %>">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="control-label col-sm-2" for="password">Hasło:</label>
+              <div class="col-sm-10">          
+                <input name="password" type="password" class="form-control" id="password" placeholder="Podaj hasło" value="<%= referee.password %>">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="control-label col-sm-2" for="password1">Powtórz hasło:</label>
+              <div class="col-sm-10">          
+                <input name="password1" type="password" class="form-control" id="password1" placeholder="Podaj hasło">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="control-label col-sm-2" for="email">Email:</label>
+              <div class="col-sm-10">
+                <input name="email" type="email" class="form-control" id="email" placeholder="Podaj email" value="<%= referee.email %>">
+              </div>
+            </div>
+            <hr />
+            <div class="form-group">        
+              <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" class="btn btn-default pull-right">Aktualizuj</button>
+              </div>
+            </div>
+        </form>
         </div>
     </div>
-    <% include ../templates/footer.ejs %>
-  </body>
-</html>
+</div>

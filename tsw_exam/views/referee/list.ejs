@@ -1,61 +1,43 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Balios</title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-    <link rel="stylesheet" href="/bootstrap.css" />
-    <script src="/jquery.js" ></script>
-    <script src="/javascripts/script.js"></script>  
-    <script src="/bootstrap.js" ></script>
-  </head>
-  
-  <body>
-    <% include ../templates/admin_header.ejs  %>
-    <div class="container content">
-        <div class="col-lg-12 col-md-12 col-sm-12">
-            <div class="panel panel-default transparent-panel">
-                <div class="panel panel-heading text-center">
-                    <h1>Lista Sędziów</h1>
-                    <a href="/referee/add" class="btn btn-success">Dodaj</a>
-                </div>
-                <div class="panel panel-body">
-                  <table class="table table-hover">
-                    <thead>
-                      <tr>
-                        <th>Dane personalne</th>
-                        <th>Login</th>
-                        <th>Email</th>
-                        <th>Stan konta</th>
-                        <th></th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                     <% for(var i=0; i < data.length; i++){ %>
-                      <tr>
-                        <td><%= data[i].firstName %> <%= data[i].lastName %></td>
-                        <td><%= data[i].username %></td>
-                        <td><%= data[i].email %></td>
-                        <% if(data[i].isActive){ %>
-                         <td>Aktywne</td>
-                        <% }else{ %>
-                         <td>Nieaktywne</td>
-                        <% } %>
-                        <td><a href="/referee/edit/<%= data[i]._id %>" class="btn btn-primary">Edytuj</a>
-                        <% if(data[i].isActive){ %>
-                         <a href="/referee/deactivate/<%= data[i]._id %>" id="deactivate" class="btn btn-warning">Dezaktywuj</a>
-                        <% }else{ %>
-                         <a href="/referee/activate/<%= data[i]._id %>" id="activate" class="btn btn-success">Aktywuj</a>
-                        <% } %>
-                        </td>
-                      </tr>
-                     <% } %>
-                    </tbody>
-                  </table>
-                </div>
-            </div>
+
+<div id="content-panel" class="col-lg-12 col-md-12 col-sm-12">
+    <div class="panel panel-default">
+        <div class="panel panel-heading text-center">
+            <h1>Lista Sędziów</h1>
+            <a href="/referee/add" class="btn btn-success">Dodaj</a>
+        </div>
+        <div class="panel panel-body">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>Dane personalne</th>
+                <th>Login</th>
+                <th>Email</th>
+                <th>Stan konta</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+             <% for(var i=0; i < data.length; i++){ %>
+              <tr>
+                <td><%= data[i].firstName %> <%= data[i].lastName %></td>
+                <td><%= data[i].username %></td>
+                <td><%= data[i].email %></td>
+                <% if(data[i].isActive){ %>
+                 <td>Aktywne</td>
+                <% }else{ %>
+                 <td>Nieaktywne</td>
+                <% } %>
+                <td><a id="refereeEdit" href="/referee/edit/<%= data[i]._id %>" class="btn btn-primary">Edytuj</a>
+                <% if(data[i].isActive){ %>
+                 <a href="/referee/deactivate/<%= data[i]._id %>" id="deactivate" class="btn btn-warning">Dezaktywuj</a>
+                <% }else{ %>
+                 <a href="/referee/activate/<%= data[i]._id %>" id="activate" class="btn btn-success">Aktywuj</a>
+                <% } %>
+                </td>
+              </tr>
+             <% } %>
+            </tbody>
+          </table>
         </div>
     </div>
-    <% include ../templates/footer.ejs %>
-  </body>
-  
-</html>
+</div>

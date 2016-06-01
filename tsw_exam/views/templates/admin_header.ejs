@@ -14,32 +14,30 @@
         <li class="dropdown">
             <a class="dropdown-toggle" data-toggle="dropdown" href="#">Zawody<span class="caret"></span></a>
             <ul class="dropdown-menu">
-                <li><a href="/contest/list">lista</a></li>
-                <li><a href="/contest/add">dodaj</a></li>
+                <li><a id="contectList" href="/contest/list">lista</a></li>
+                <li><a id="contectAdd" href="/contest/add">dodaj</a></li>
             </ul>
         </li>
         <li class="dropdown">
             <a class="dropdown-toggle" data-toggle="dropdown" href="#">Sędziowie<span class="caret"></span></a>
             <ul class="dropdown-menu">
-                <li><a href="/referee/list">lista</a></li>
-                <li><a href="/referee/add">dodaj</a></li>
+                <li><a id="refereeList" href="/referee/list">lista</a></li>
+                <li><a id="refereeAdd" href="/referee/add">dodaj</a></li>
             </ul>
         </li>
         <li class="dropdown">
             <a class="dropdown-toggle" data-toggle="dropdown" href="#">Konie<span class="caret"></span></a>
             <ul class="dropdown-menu">
-                <li><a href="/horse/list">lista</a></li>
-                <li><a href="/horse/add">dodaj</a></li>
+                <li><a id="horseList" href="/horse/list">lista</a></li>
+                <li><a id="horseAdd" href="/horse/add">dodaj</a></li>
             </ul>
         </li>
         <li><a href="/result/list">Wyniki</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
        <% if (user){ %>
-        <li><a href="/users/logout"><span class="glyphicon glyphicon-log-out"></span> Zalogowany jako <u><%= user.username %></u> (wyloguj)</a></li>
-       
+        <li><a href="/users/logout"><span class="glyphicon glyphicon-log-out"></span> Zalogowany jako <u><%= user.username %></u> (wyloguj)</a></li>       
        <% }else{ %>
-           <li><a href="/users/registration"><span class="glyphicon glyphicon-user"></span> Rejestracja</a></li>
            <li><a href="/users/login"><span class="glyphicon glyphicon-log-in"></span> Logowanie</a></li>
        <% } %>
       </ul>

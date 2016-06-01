@@ -10,7 +10,8 @@ router.route('/add').get(function(req,res,next){
     if(req.user){
         if(req.user.hasAccess(['admin','public','referee'])){
             console.log("ADMIN");
-            res.render('referee/add',{user: req.user, errors: null});    
+            res.json('OK');
+            //res.render('referee/add',{user: req.user, errors: null});    
         }else{
             if(req.user.hasAccess('referee')){
                 console.log('REFEREE');
@@ -26,21 +27,7 @@ router.route('/add').get(function(req,res,next){
        //console.log('user with these creditentials already exists!');
        //res.render('')
   // }else{
-    var username = req.body.username;
-    var firstName = req.body.firstName;
-    var lastName = req.body.lastName;
-    var email = req.body.email;
-    var password = req.body.password;
-    var password1 = req.body.password1;
-    
-    /*req.checkBody('username', 'Pole login nie może być puste!').notEmpty();
-    req.checkBody('firstName','Pole z imieniem nie może być puste!').notEmpty();
-    req.checkBody('lastName','Pole z nazwiskiem nie może być puste!').notEmpty();
-    req.checkBody('email','Podaj poprawny adres email!').isEmail();
-    req.checkBody('email','Pole z adresem email nie może być puste!').notEmpty();
-    req.checkBody('password','Pole hasło nie może być puste!').notEmpty();
-    req.checkBody('password1','Hasła nie pasują!').equals(req.body.password);
-    var validationErrors = req.validationErrors();*/
+    console.log('body: ' + JSON.stringify(req.body));
        Account.register(new Account({username : req.body.username,
                                 firstName : req.body.firstName,
                                 lastName : req.body.lastName,
@@ -54,10 +41,12 @@ router.route('/add').get(function(req,res,next){
            return res.render('/user/registration',{account: account, errors: validationErrors});
        }
        console.log('user registered!');
-       res.redirect('/');
+       //res.redirect('/');
+       Account.find({role: 'referee'}).lean().exec(function(err,referees){
+            res.json(referees);
+        });
    });   
 });
-
 
 //Getting a list of Referees(Account) from Database and displaying in table
 router.get('/list',function(req,res){
@@ -67,7 +56,8 @@ router.get('/list',function(req,res){
             console.log("ADMIN");
             Account.find({role: 'referee'}).lean().exec(function(err,referees){
                console.log(JSON.stringify(referees)); 
-               res.render('referee/list',{user: req.user, errors: null, data: referees});  
+              // res.render('referee/list',{user: req.user, errors: null, data: referees});  
+                res.json(referees);
             });  
         }else{
             if(req.user.hasAccess('referee')){
@@ -89,7 +79,8 @@ router.get('/edit/:referee_id',function(req,res){
         if(req.user.hasAccess(['admin','public','referee'])){
             console.log("ADMIN");
             Account.findOne({role: 'referee', _id:req.params.referee_id},function(err,referee){
-                res.render('referee/edit',{user: req.user, referee: referee, errors: null});
+                res.json(referee);
+                //res.render('referee/edit',{user: req.user, referee: referee, errors: null});
             });
         }else{
             if(req.user.hasAccess('referee')){
@@ -104,8 +95,10 @@ router.get('/edit/:referee_id',function(req,res){
 });
 
 router.post('/edit/:referee_id',function(req,res){
-    console.log(req.params.referee_id);
-    Account.findById(req.params.referee_id,function(err,referee){
+    console.log('body: ' + JSON.stringify(req.body));
+    Account.findOne({role: 'referee', _id:req.params.referee_id},function(err,referee){
+        console.log(referee);
+        console.log(req.body.username);
         referee.update({
             username : req.body.username,
             firstName : req.body.firstName,
@@ -114,13 +107,18 @@ router.post('/edit/:referee_id',function(req,res){
             password : req.body.password
         }, function(error){
             console.log('dupe');
-            res.render('referee/edit/',{user: req.user, referee: referee, errors: 'Nie udało się dokonać aktualizacji!'});
+            console.log(error);
+            //res.render('referee/edit/',{user: req.user, referee: referee, errors: 'Nie udało się dokonać aktualizacji!'});
         });
         if(err){
-            console.log('dupe');
-            res.render('referee/edit/',{user: req.user, referee: referee, errors: 'Nie udało się dokonać aktualizacji!'});
+            console.log('dupe2');
+            console.log(err);
+            //res.render('referee/edit/',{user: req.user, referee: referee, errors: 'Nie udało się dokonać aktualizacji!'});
         }else{
-            res.redirect('/referee/list');
+            //res.redirect('/referee/list');
+            Account.find({role: 'referee'}).lean().exec(function(err,referees){
+                res.json(referees);
+            });
         }
     });
 });

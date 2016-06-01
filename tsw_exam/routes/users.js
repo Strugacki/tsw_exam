@@ -12,25 +12,6 @@ router.get('/', function(req, res) {
 router.route('/registration').get(function(req,res,next){
    res.render('user/registration',{errors: null}); 
 }).post(function(req,res,next){
-   //if(Account.findOne({email : req.body.email})){
-       //console.log('user with these creditentials already exists!');
-       //res.render('')
-  // }else{
-    var username = req.body.username;
-    var firstName = req.body.firstName;
-    var lastName = req.body.lastName;
-    var email = req.body.email;
-    var password = req.body.password;
-    var password1 = req.body.password1;
-    
-    /*req.checkBody('username', 'Pole login nie może być puste!').notEmpty();
-    req.checkBody('firstName','Pole z imieniem nie może być puste!').notEmpty();
-    req.checkBody('lastName','Pole z nazwiskiem nie może być puste!').notEmpty();
-    req.checkBody('email','Podaj poprawny adres email!').isEmail();
-    req.checkBody('email','Pole z adresem email nie może być puste!').notEmpty();
-    req.checkBody('password','Pole hasło nie może być puste!').notEmpty();
-    req.checkBody('password1','Hasła nie pasują!').equals(req.body.password);
-    var validationErrors = req.validationErrors();*/
        Account.register(new Account({username : req.body.username,
                                 firstName : req.body.firstName,
                                 lastName : req.body.lastName,
