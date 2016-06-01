@@ -1,77 +1,56 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Balios - dodawanie Konia</title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-    <link rel="stylesheet" href="/bootstrap.css" />
-    <script src="/jquery.js" ></script>
-    <script src="/bootstrap.js" ></script>
-  </head>
-  
-  <body>
-    <% include ../templates/admin_header.ejs %>
-    <div class="container content">
-        <div class="col-lg-6 col-lg-push-3 col-md-8 col-md-push-2 col-sm-12">
-            <div class="panel panel-default">
-                <div class="panel panel-heading text-center">
-                    <h1>Formularz dodawania Konia</h1>
-                    <% if(errors){ %>
-                        <% errors.forEach(function(error){ %>
-                            dupa
-                        <% })} %>
-                </div>
-                <div class="panel panel-body">
-                    <form class="form-horizontal" role="form" action="/horse/edit/<%= horse._id %>" method="post">
-                   <div class="form-group">
-                      <label class="control-label col-sm-2" for="horseName">Imię:</label>
-                      <div class="col-sm-10">
-                        <input name="horseName" type="text" class="form-control" id="horseName" placeholder="Podaj imię"value="<%= horse.horseName %>">
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label class="control-label col-sm-2" for="sex">Płeć:</label>
-                      <div class="col-sm-10">
-                        <select name="sex" class="form-control" id="sex">
-                            <option value="null">-- Wybierz --</option>
-                             <% if(horse.sex == 'stallion'){ %>
-                                 <option selected value="stallion">Ogier</option>
-                                 <option value="mare">Klacz</option>
-                             <% }else{ %>
-                                 <option value="stallion">Ogier</option>
-                                 <option selected value="mare">Klacz</option>
-                            <% } %>
-                        </select>
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label class="control-label col-sm-2" for="birthDate">Data urodzenia:</label>
-                      <div class="col-sm-10">
-                        <input name="birthDate" type="text" class="form-control" id="birthDate" placeholder="Podaj datę urodzenia konia" value="<%= horse.birthDate %>">
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label class="control-label col-sm-2" for="ownerFirstName">Imię właściciela:</label>
-                      <div class="col-sm-10">
-                        <input name="ownerFirstName" type="text" class="form-control" id="ownerFirstName" placeholder="Podaj imię" value="<%= horse.ownerFirstName %>">
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label class="control-label col-sm-2" for="ownerLastName">Nazwisko właściciela:</label>
-                      <div class="col-sm-10">
-                        <input name="ownerLastName" type="text" class="form-control" id="ownerLastName" placeholder="Podaj nazwisko"value="<%= horse.ownerLastName %>">
-                      </div>
-                    </div>
-                    <hr />
-                    <div class="form-group">        
-                      <div class="col-sm-offset-2 col-sm-10">
-                        <button type="submit" class="btn btn-primary pull-right">Aktualizuj</button> albo <a id="refereeList" class="btn btn-default pull-right">Wróc</a>
-                      </div>
-                    </div>
-                </form>
-                </div>
+<div id="content-panel" class="col-lg-6 col-lg-push-3 col-md-8 col-md-push-2 col-sm-12">
+    <div class="panel panel-default">
+        <div class="panel panel-heading text-center">
+            <h1>Formularz dodawania Konia</h1>
+        </div>
+        <div class="panel panel-body">
+            <form class="form-horizontal" role="form" action="/horse/edit/<%= horse._id %>" method="post">
+           <div class="form-group">
+              <label class="control-label col-sm-2" for="horseName">Imię:</label>
+              <div class="col-sm-10">
+                <input name="horseName" type="text" class="form-control" id="horseName" placeholder="Podaj imię"value="<%= horse.horseName %>">
+              </div>
             </div>
+            <div class="form-group">
+              <label class="control-label col-sm-2" for="sex">Płeć:</label>
+              <div class="col-sm-10">
+                <select name="sex" class="form-control" id="sex">
+                    <option value="null">-- Wybierz --</option>
+                     <% if(horse.sex == 'stallion'){ %>
+                         <option selected value="stallion">Ogier</option>
+                         <option value="mare">Klacz</option>
+                     <% }else{ %>
+                         <option value="stallion">Ogier</option>
+                         <option selected value="mare">Klacz</option>
+                    <% } %>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="control-label col-sm-2" for="birthDate">Data urodzenia:</label>
+              <div class="col-sm-10">
+                <input name="birthDate" type="text" class="form-control" id="birthDate" placeholder="Podaj datę urodzenia konia" value="<%= horse.birthDate %>">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="control-label col-sm-2" for="ownerFirstName">Imię właściciela:</label>
+              <div class="col-sm-10">
+                <input name="ownerFirstName" type="text" class="form-control" id="ownerFirstName" placeholder="Podaj imię" value="<%= horse.ownerFirstName %>">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="control-label col-sm-2" for="ownerLastName">Nazwisko właściciela:</label>
+              <div class="col-sm-10">
+                <input name="ownerLastName" type="text" class="form-control" id="ownerLastName" placeholder="Podaj nazwisko"value="<%= horse.ownerLastName %>">
+              </div>
+            </div>
+            <hr />
+            <div class="form-group">        
+              <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" class="btn btn-primary pull-right">Aktualizuj</button> <a id="horseList" class="btn btn-default pull-right">Wróc</a>
+              </div>
+            </div>
+        </form>
         </div>
     </div>
-    <% include ../templates/footer.ejs %>
-  </body>
-</html>
+</div>

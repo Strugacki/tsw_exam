@@ -192,4 +192,38 @@ router.get('/deactivate/:referee_id',function(req,res){
     }
 });
 
+//Deactivate Referee's Account
+router.get('/activator/:referee_id',function(req,res){
+    var role = 'public';
+    console.log(req.params);
+     if(req.user){
+        if(req.user.hasAccess(['admin','public','referee'])){
+            console.log("ADMIN");
+            console.log("DEACTIVATING ACCOUNT");
+            Account.findOne({role: 'referee',isActive: true, _id:req.params.referee_id},function(err,referee){
+                referee.isActive = false;
+                referee.save(function(err){
+                   if(!err){
+                       console.log("ACCOUNT DEACTIVATED");
+                       Account.findOne({_id: req.params.referee_id, role: 'referee'}).lean().exec(function(err,referee){
+                            res.json(referee);
+                        });
+                   }else{
+                       console.log(err);
+                   }
+                });
+            });
+            //TO-DO   
+        }else{
+            if(req.user.hasAccess('referee')){
+                console.log('REFEREE');
+                role = 'referee';
+            }
+            res.render('index', {user: req.user,userRole: role, msg: 'Nie posiadasz odpowiednich uprawnień!'});
+        }
+    }else{
+        res.render('user/login',{user: req.user, msg: 'Zalogu się na konto administratora!'});
+    }
+});
+
 module.exports = router;

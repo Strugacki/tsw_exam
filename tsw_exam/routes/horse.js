@@ -11,7 +11,7 @@ router.route('/add').get(function(req,res,next){
     if(req.user){
         if(req.user.hasAccess(['admin','public','referee'])){
             console.log("ADMIN");
-            res.render('horse/add',{user: req.user, errors: null});    
+            res.json('OK');    
         }else{
             if(req.user.hasAccess('public','referee')){
                 console.log('REFEREE');
@@ -24,6 +24,7 @@ router.route('/add').get(function(req,res,next){
         res.render('user/login',{user: req.user, msg: 'Zalogu się na konto administratora!'});
     }
 }).post(function(req,res,next){
+       console.log('body: ' + JSON.stringify(req.body));
        var horseToAdd = new Horse({
                         horseName : req.body.horseName,
                         sex : req.body.sex,
@@ -38,7 +39,9 @@ router.route('/add').get(function(req,res,next){
            return res.render('horse/add',{horse: horseToAdd, errors: err});
        }
        console.log('horse added!');
-       res.redirect('/horse/list');
+       Horse.find({}).lean().exec(function(err,horses){
+            res.json(horses);
+        });
    });   
 });
 
@@ -51,8 +54,8 @@ router.get('/list',function(req,res){
             console.log("ADMIN");
             Horse.find({}).lean().exec(function(err,horses){
                console.log(JSON.stringify(horses)); 
-               res.render('horse/list',{user: req.user, errors: null, data: horses});  
-            });  
+                res.json(horses);
+            });
         }else{
             if(req.user.hasAccess('referee')){
                 console.log('REFEREE');
@@ -73,7 +76,7 @@ router.get('/edit/:horse_id',function(req,res){
         if(req.user.hasAccess(['admin','public','referee'])){
             console.log("ADMIN");
             Horse.findOne({_id:req.params.horse_id},function(err,horse){
-                res.render('horse/edit',{user: req.user, horse: horse, errors: null});
+                res.json(horse);
             });
         }else{
             if(req.user.hasAccess('referee')){
@@ -88,7 +91,7 @@ router.get('/edit/:horse_id',function(req,res){
 });
 
 router.post('/edit/:horse_id',function(req,res){
-    Horse.findById(req.params.horse_id,function(err,horse){
+    Horse.findOne({_id:req.params.horse_id},function(err,horse){
         horse.update({
             horseName : req.body.horseName,
             sex : req.body.sex,
@@ -103,7 +106,10 @@ router.post('/edit/:horse_id',function(req,res){
             console.log('dupe');
             res.render('horse/edit/',{user: req.user, horse: horse, errors: 'Nie udało się dokonać aktualizacji!'});
         }else{
-            res.redirect('/horse/list');
+            Horse.find({}).lean().exec(function(err,horses){
+               console.log(JSON.stringify(horses)); 
+                res.json(horses);
+            });
         }
     });
 });
