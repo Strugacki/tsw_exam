@@ -1,21 +1,32 @@
 /******************************REFEREE MANAGEMENT***************************/
-
 //GET ALL REFEREES
 var refereeManager = function(){
+    
+    $.event.special.destroyed = {
+        remove: function(o) {
+          if (o.handler) {
+            o.handler()
+            }
+        }
+    }
+    
     //GET ALL REFEREES
     $('a#refereeList').click(function(e){
-    e.preventDefault();
-    var requestUrl =$(this).attr('href');
-    $.ajax({
-        url: requestUrl,
-        method: 'GET',
-        dataType: 'JSON'
-    }).done(function(data){
-        $('div#content-panel').remove();
-        //console.log(data);
-        var html = new EJS({url: 'referee/list.ejs'}).render({data: data});
-        $('div.container').append(html);
-    });
+        e.preventDefault();
+        var requestUrl =$(this).attr('href');
+        $.ajax({
+            url: requestUrl,
+            method: 'GET',
+            dataType: 'JSON'
+        }).done(function(data){
+            $('div#content-panel').remove();
+            //console.log(data);
+            var html = new EJS({url: 'referee/list.ejs'}).render({data: data});
+            $('div.container').append(html);
+            $('div#content-panel').bind('destroyed', function() {
+              console.log('chuj');
+            });
+        });
     });
     
     /* GET AND POST EDIT REFEREE FORM */
@@ -127,18 +138,22 @@ var refereeManager = function(){
 /******************************HORSE MANAGEMENT*****************************/
     //GET ALL HORSES
     $('a#horseList').click(function(e){
-    e.preventDefault();
-    var requestUrl =$(this).attr('href');
-    $.ajax({
-        url: requestUrl,
-        method: 'GET',
-        dataType: 'JSON'
-    }).done(function(data){
-        $('div#content-panel').remove();
-        //console.log(data);
-        var html = new EJS({url: 'horse/list.ejs'}).render({data: data});
-        $('div.container').append(html);
-    });
+        e.preventDefault();
+        var requestUrl =$(this).attr('href');
+        $.ajax({
+            url: requestUrl,
+            method: 'GET',
+            dataType: 'JSON'
+        }).done(function(data){
+            console.log(data);
+            $('div#content-panel').remove();
+            //console.log(data);
+            var html = new EJS({url: 'horse/list.ejs'}).render({data: data});
+            $('div.container').append(html);
+            $('div#content-panel').bind('destroyed', function() {
+              console.log('chuj');
+            });
+        });
     });
     
     /* GET AND POST EDIT HORSE FORM */
@@ -232,11 +247,136 @@ var refereeManager = function(){
             
         });
     });
+    
+/************************COMPETITION MANAGEMENT*****************************/
+    
+  //  $('a#competitionAdd').each(function(){
+        $('a#competitionAdd').on('click',function(e){
+            var competitionData = {};
+            e.preventDefault();
+            //get all referees from database
+            $.ajax({
+                url: '/referee/list',
+                method: 'GET',
+                dataType: 'JSON'
+            }).done(function(data){
+                $('div#content-panel').remove();
+                var html = new EJS({url: 'competition/add.ejs'}).render({data: {}}); //rendering view
+                $('div.container').append(html);
+                //form submit locker
+
+                $('div.hidden-content').hide();                
+                var refereesList = '';
+                //creating referees options for select
+                for(var i=0; i< data.length; i++){
+                    if(data[i].isActive){
+                        refereesList += '<option value="' + data[i]._id +'">' + data[i].firstName + " " + data[i].lastName + "</option>";    
+                    }
+                }
+                $('select#refereesList').append(refereesList);//append referees list to select
+                //get all horses from database
+                $.ajax({
+                    url: '/horse/list',
+                    method: 'GET',
+                    dataType: 'JSON'
+                }).done(function(data){
+                    var horsesList = '';
+                    for(var i=0; i< data.length; i++){
+                        horsesList += '<option value="' + data[i]._id +'">' + data[i].horseName + "</option>";
+                    }
+                    $('select#horsesList').append(horsesList);
+                    /**************************************************/
+                    //********DIVIDE INTO GROUPS BUTTON LOGIC*********//
+                     $('button#slideDown').on('click',function(){
+                        $('div.hidden-content').slideToggle();
+                        if($('select#refereesList').attr('disabled') == 'disabled' && $('select#horsesList').attr('disabled') == 'disabled'){             $('select#refereesList').removeAttr('disabled');
+                            $('select#horsesList').removeAttr('disabled');
+                        }else{
+                            $('select#refereesList').attr('disabled','disabled');
+                            $('select#horsesList').attr('disabled','disabled');
+                        }
+                        //
+                        competitionData['horses'] = [];
+                        competitionData['referees'] = [];
+                        var refereesForGrouping = [];
+                        var horsesForGrouping = [];
+                        $('select#horsesList > option:selected').each(function(){
+                            var horse = {horseName: $(this).text(), id: $(this).val()};
+                            competitionData['horses'].push($(this).val());
+                            horsesForGrouping.push(horse);
+                        });
+                        //
+                        $('select#refereesList > option:selected').each(function(){
+                            var referee = {id: $(this).val(), name: $(this).text()};
+                            competitionData['referees'].push($(this).val());
+                            refereesForGrouping.push(referee);
+                        });
+                        //
+                        console.log(competitionData['horses']);
+                        console.log(competitionData['referees']);
+                        console.log(refereesForGrouping);
+                        console.log(horsesForGrouping[0]['horseName']);
+                        // 
+                        for(var i=1;i<=competitionData['horses'].length;i++){
+                            $('select#groupsNumber').append('<option value="' + i +'">'+i+'</option>');
+                        }
+                        // 
+                        var groupsNumber = 0;
+                        $('select#groupsNumber').change(function(){
+                            groupsNumber = $(this).val();
+                            console.log('NUMER:' + groupsNumber);
+                            if($(this).val() !== null && (competitionData['horses'].length<=competitionData['referees'].length)){
+                                if($('button#addGroups').attr('disabled') == 'disabled'){
+                                $('button#addGroups').removeAttr('disabled');
+                                }else{
+                                    $('button#addGroups').attr('disabled','disabled');
+                                }
+                            }
+                        });
+                        //
+                        $('button#addGroups').on('click',function(){
+                            console.log(groupsNumber);
+                            $('div#group-panel').remove();
+                            for(var i = groupsNumber; i>0;i--){
+                                console.log('weszlo');
+                                var html = new EJS({url: 'competition/templates/group.ejs'}).render({number : groupsNumber,referees: refereesForGrouping, horses: horsesForGrouping});
+                                $('div#groups').append(html);
+                            }
+                        });
+                         $('form').submit(function(){
+                             var data = {};
+                             data.referees = competitionData['referees'];
+                             console.log(competitionData['referees']);
+                             data.horses = competitionData['horses'];
+                             console.log(competitionData['horses']);
+                             data.groups = ['chuj'];
+                             $.ajax({
+                                 url: '/competition/add',
+                                 method: 'POST',
+                                 dataType: 'JSON',
+                                 data: JSON.stringify(data)
+                             }).done(function(data){
+                                 
+                             });
+                         });
+                        
+                    });
+                    /**************************************************/
+                });
+            });  
+            
+       });
+        
+  //  });
 }
 
 /***************************************************************************/
-$(document).ready(refereeManager);
-$(document).bind("DOMSubtreeModified",function(){
-    console.log('DOM tree changed');
+$(document).ready(function(){
+    console.log('document ready');
     refereeManager();
+    $('div#content-panel').bind('destroyed', function() {
+        console.log('dom changed');
+        refereeManager();
+    });
 });
+

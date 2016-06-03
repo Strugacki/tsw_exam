@@ -31,7 +31,7 @@ var bodyParser = require('body-parser');
 //Routes assign to variables
 var routes = require('./routes/index');
 var users = require('./routes/users');
-var contest = require('./routes/contest');
+var competition = require('./routes/competition');
 var horse = require('./routes/horse');
 var result = require('./routes/result');
 var referee = require('./routes/referee');
@@ -88,6 +88,7 @@ app.use(passport.session());
 /**************************************************/
 //Account model initialization
 var Account = require('./models/account');
+var Horse = require('./models/horse');
 passport.use(Account.createStrategy());
 passport.serializeUser(Account.serializeUser());//this and below store user login
 passport.deserializeUser(Account.deserializeUser());
@@ -114,8 +115,9 @@ app.use(expressValidator({
 app.use('/', routes);
 app.use('/users', users);
 app.use('/referee', referee);
-//app.use('/contest', contest);
 app.use('/horse', horse);
+//app.use('/group', group);
+app.use('/competition', competition);
 //app.use('/result', result);
 
 /// catch 404 and forwarding to error handler
@@ -149,11 +151,30 @@ app.use(function(err, req, res, next) {
     });
 });
 
-
 //Socket.io listener for app
 io.on('connection', function(socket){
     console.log('User connected to server');
     socket.emit('message','new connection');
+    /*Account.find({role:'referee'},function(err,referees){
+        socket.emit('referees',JSON.stringify(referees)); 
+    });
+    Horse.find({},function(err,horses){
+       socket.emit('horses',JSON.stringify(horses)); 
+    });*/
+    //var referees = Account.find({role: 'referee'});
+    //socket.emit('referees',referees);
+    
+    socket.on('reqH',function(data){
+        Horse.find({},function(err,horses){
+           socket.emit('horses',JSON.stringify(horses)); 
+        });
+    });
+    socket.on('reqR',function(data){
+        Account.find({role:'referee'},function(err,referees){
+            socket.emit('referees',JSON.stringify(referees)); 
+        });
+    });
+    
 });
 
 server.listen(serverPort,function(){

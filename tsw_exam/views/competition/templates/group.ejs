@@ -1,0 +1,30 @@
+<div id="group-panel" class="panel panel-default">
+        <div class="panel panel-heading text-center">
+            <h1>Grupa <%= number %></h1>
+        </div>
+        <div class="panel panel-body">
+            <div class="form-group">
+              <label class="control-label col-sm-2" for="refereesList">Sędziowie:</label>
+              <div class="col-sm-10">
+                  <% for(var i = 0;i<referees.length;i++){ %>
+                    <div class="checkbox">
+                      <label><input id="group<%= number %>Referee" type="checkbox" name="referee" value="<%=referees[i]['id'] %>"><%= referees[i]['name'] %></label>
+                    </div>
+                  <% } %>
+              </div>
+            </div>
+            <hr>
+            <div class="form-group">
+              <label class="control-label col-sm-2" for="horsesList">Konie:</label>
+              <div class="col-sm-10">
+                  <% for(var i = 0;i<horses.length;i++){ %>
+                    <div class="checkbox">
+                      <label><input id="group<%= number %>Horse" type="checkbox" name="horse" value="<%= horses[i]['id'] %>"><%= horses[i]['horseName'] %></label>
+                    </div>
+                  <% } %>
+              </div>
+            </div>
+            <br>
+            <hr>
+        </div>
+    </div>

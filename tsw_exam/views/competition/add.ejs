@@ -1,0 +1,60 @@
+<div id="content-panel" class="col-lg-6 col-lg-push-3 col-md-8 col-md-push-2 col-sm-12">
+    <div class="panel panel-default">
+        <div class="panel panel-heading text-center">
+            <h1>Formularz dodawania Zawodów</h1>
+        </div>
+        <div class="panel panel-body">
+            <form class="form-horizontal" role="form" action="/competition/add" method="post">
+                <div class="form-group">
+                  <label class="control-label col-sm-2" for="name">Nazwa zawodów:</label>
+                  <div class="col-sm-10">
+                    <input name="name" type="text" class="form-control" id="name" placeholder="Podaj nazwę">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="control-label col-sm-2" for="refereesList">Lista sędziów:</label>
+                  <div class="col-sm-10">
+                      <select multiple name="refereesList" class="form-control" id="refereesList">
+                      </select>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="control-label col-sm-2" for="horsesList">Lista koni:</label>
+                  <div class="col-sm-10">
+                      <select multiple name="horsesList" class="form-control" id="horsesList">
+                      </select>
+                  </div>
+                </div>
+                <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+                    <button class="btn btn-info" id="slideDown">Podziel na grupy</button>
+                </div>
+                <br>
+                <hr>
+                <div class="hidden-content">
+                    <div class="form-group text-center">
+                      <label class="control-label col-sm-2" for="refereesList">Ilość grup:</label>
+                      <div class=" col-lg-2 col-md-2 col-sm-10">
+                          <select class="form-control" id="groupsNumber">
+                              <option value="null">--</option>
+                          </select>
+                      </div>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12 text-center">
+                        <button disabled='disabled' class="btn btn-info" id="addGroups">Stwórz grupy</button>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12" id="groups">
+                        
+                    </div>
+                    <hr />
+                    <div class="form-group">        
+                      <div class="col-sm-offset-2 col-sm-10">
+                        <button type="submit" class="btn btn-primary pull-right">Dodaj</button>
+                      </div>
+                    </div>
+                </div>
+        </form>
+        </div>
+    </div>
+</div>
+
+
