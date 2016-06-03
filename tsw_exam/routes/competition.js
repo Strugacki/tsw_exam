@@ -101,8 +101,6 @@ router.route('/add').get(function(req,res){
     //New competition variable and Initialization
     var competitionToAdd = new Competition({
         name: req.body.name,
-        referees: refereesReq,
-        horses: horsesReq,
         isActive: false,
         isReady: true,
         groups: groups
@@ -115,7 +113,101 @@ router.route('/add').get(function(req,res){
             console.log('Competition has been added');
         }
     });
+    
+    Competition.find({}).lean().exec(function(err,competitions){
+        console.log(competitions);
+       res.json(competitions); 
+    });
 
+});
+
+
+router.get('/list',function(req,res){
+     var role = 'public';
+    if(req.user){
+        if(req.user.hasAccess(['admin','public','referee'])){
+            console.log("ADMIN");
+            Competition.find({}).populate('groups').lean().exec(function(err,competitions){
+                console.log(competitions);
+                res.json(competitions);
+            });
+        }else{
+            if(req.user.hasAccess('referee')){
+                console.log('REFEREE');
+                role = 'referee';
+            }
+            res.render('index', {user: req.user, userRole: role, msg: 'Nie posiadasz odpowiednich uprawnień!'});
+        }
+    }else{
+        res.render('user/login',{user: req.user, msg: 'Zalogu się na konto administratora!'});
+    }
+});
+
+
+//Activate Referee's Account
+router.get('/activator/:competition_id',function(req,res){
+    var role = 'public';
+     if(req.user){
+        if(req.user.hasAccess(['admin','public','referee'])){
+            console.log("ADMIN");
+            console.log("DEACTIVATING HORSE");
+            var value = false;
+            Competition.findOne({_id:req.params.competition_id},function(err,competition){
+                console.log(competition.isActive);
+                if(competition.isActive){
+                    value = false;
+                    console.log(value);
+                }else{
+                    console.log(value);
+                    value = true;
+                }
+                competition.update({isActive: value}, function(error){
+                    console.log('dupe');
+                    console.log(error);
+                });
+                Competition.find({}).lean().exec(function(err,competition){
+                    res.json(competition);
+                });
+            });
+            //TO-DO   
+        }else{
+            if(req.user.hasAccess('referee')){
+                console.log('REFEREE');
+                role = 'referee';
+            }
+            res.render('index', {user: req.user,userRole: role, msg: 'Nie posiadasz odpowiednich uprawnień!'});
+        }
+    }else{
+        res.render('user/login',{user: req.user, msg: 'Zalogu się na konto administratora!'});
+    }
+});
+
+
+router.get('/groups/:competition_id',function(req,res){
+   var role = 'public';
+     if(req.user){
+        if(req.user.hasAccess(['admin','public','referee'])){
+            console.log("ADMIN");
+            console.log("DEACTIVATING HORSE");
+            var value = false;
+            Competition.findOne({_id:req.params.competition_id}).populate('groups').lean().exec(function(err,competition){
+                console.log(competition.groups);
+                console.log(competition.groups[0].referees);
+                Group.findOne({_id:competition.groups[0]._id}).populate('horses').lean().exec(function(err,group){
+                    console.log(group.horses);
+                })
+            });
+            //TO-DO   
+        }else{
+            if(req.user.hasAccess('referee')){
+                console.log('REFEREE');
+                role = 'referee';
+            }
+            res.render('index', {user: req.user,userRole: role, msg: 'Nie posiadasz odpowiednich uprawnień!'});
+        }
+    }else{
+        res.render('user/login',{user: req.user, msg: 'Zalogu się na konto administratora!'});
+    } 
 });
 
 module.exports =router;

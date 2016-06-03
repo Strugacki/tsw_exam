@@ -56,8 +56,9 @@ router.get('/list',function(req,res){
             console.log("ADMIN");
             Account.find({role: 'referee'}).lean().exec(function(err,referees){
                console.log(JSON.stringify(referees)); 
-              // res.render('referee/list',{user: req.user, errors: null, data: referees});  
-                res.json(referees);
+              // res.render('referee/list',{user: req.user, errors: null, data: referees}); 
+                req.io.emit('KURWY','KURWY');
+                //res.json(referees);
             });  
         }else{
             if(req.user.hasAccess('referee')){

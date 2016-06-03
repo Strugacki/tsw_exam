@@ -40,6 +40,7 @@ var app = express();
 //adding socket.io to app
 var server = https.createServer(options,app);
 var io = require('socket.io')(server);
+app.io = io;
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -141,6 +142,11 @@ if (app.get('env') === 'development') {
     });
 }
 
+app.use(function(req,res,next){
+    req.io = io;
+    next();
+});
+
 // production error handler
 // no stacktraces leaked to user
 app.use(function(err, req, res, next) {
@@ -155,15 +161,6 @@ app.use(function(err, req, res, next) {
 io.on('connection', function(socket){
     console.log('User connected to server');
     socket.emit('message','new connection');
-    /*Account.find({role:'referee'},function(err,referees){
-        socket.emit('referees',JSON.stringify(referees)); 
-    });
-    Horse.find({},function(err,horses){
-       socket.emit('horses',JSON.stringify(horses)); 
-    });*/
-    //var referees = Account.find({role: 'referee'});
-    //socket.emit('referees',referees);
-    
     socket.on('reqH',function(data){
         Horse.find({},function(err,horses){
            socket.emit('horses',JSON.stringify(horses)); 
@@ -173,6 +170,9 @@ io.on('connection', function(socket){
         Account.find({role:'referee'},function(err,referees){
             socket.emit('referees',JSON.stringify(referees)); 
         });
+    });
+    socket.on('KURWY',function(data){
+        console.log('WINO I PIANINO');
     });
     
 });

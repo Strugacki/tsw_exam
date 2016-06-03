@@ -8,4 +8,4 @@ var Group = new Schema({
     horses: [{type : Schema.Types.ObjectId, ref : 'Horse'}]
 });
 
-module.exports = mongoose.model('Group ', Group);
+module.exports = mongoose.model('Group', Group);
