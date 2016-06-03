@@ -52,18 +52,3 @@
         </div>
     </div>
 </div>
-<script>
-var URL_SERVER = "https://localhost:3000";
-            var socket = io.connect(URL_SERVER);
-            
-            socket.emit('getCompetitionData',true);
-            
-            socket.on("referees",function(referees){
-                console.log(referees);
-            });
-
-
-            socket.on("horses",function(data){
-                console.log(data);
-            });
-</script>

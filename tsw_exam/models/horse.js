@@ -11,7 +11,7 @@ var Horse = new Schema({
     ownerFirstName: {type : String, required : true},
     ownerLastName: {type : String, required : true},
     isActive: {type : Boolean, required : true},
-    group: {type: Schema.Types.ObjectId, ref: 'Group'}
+    group: [{type: Schema.Types.ObjectId, ref: 'Group'}]
 });
 
 //Horse.plugin(passportLocalMongoose);

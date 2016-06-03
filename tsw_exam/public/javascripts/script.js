@@ -264,7 +264,9 @@ var refereeManager = function(){
                 var html = new EJS({url: 'competition/add.ejs'}).render({data: {}}); //rendering view
                 $('div.container').append(html);
                 //form submit locker
-
+                $('form').submit(function(e){
+                    e.preventDefault();
+                });
                 $('div.hidden-content').hide();                
                 var refereesList = '';
                 //creating referees options for select
@@ -314,23 +316,31 @@ var refereeManager = function(){
                         //
                         console.log(competitionData['horses']);
                         console.log(competitionData['referees']);
-                        console.log(refereesForGrouping);
-                        console.log(horsesForGrouping[0]['horseName']);
                         // 
                         for(var i=1;i<=competitionData['horses'].length;i++){
-                            $('select#groupsNumber').append('<option value="' + i +'">'+i+'</option>');
+                            $('select#horsesInGroupNumber').append('<option value="' + i +'">'+i+'</option>');
                         }
                         // 
                         var groupsNumber = 0;
-                        $('select#groupsNumber').change(function(){
-                            groupsNumber = $(this).val();
-                            console.log('NUMER:' + groupsNumber);
+                        $('select#horsesInGroupNumber').change(function(){
+                            horsesInGroupNumber = $(this).val();
+                            $('select#refereesInGroupNumber > option').remove();
+                            console.log('NUMER OF HORSES:' + horsesInGroupNumber);
+                            var j = competitionData['horses'].length;
+                            while(j>=horsesInGroupNumber){
+                                j-=horsesInGroupNumber;
+                                groupsNumber++;
+                            }
+                            console.log(groupsNumber);
+                            var divider = competitionData['referees'].length / groupsNumber;
+                            for(var i=1;i<=divider;i++){
+                                $('select#refereesInGroupNumber').append('<option value="' + i +'">'+i+'</option>');
+                            }
+                        });
+                        $('select#refereesInGroupNumber').change(function(){
+                            refereesInGroupNumber = $(this).val();
+                            console.log('NUMER OF REFEREES:' + refereesInGroupNumber);
                             if($(this).val() !== null && (competitionData['horses'].length<=competitionData['referees'].length)){
-                                if($('button#addGroups').attr('disabled') == 'disabled'){
-                                $('button#addGroups').removeAttr('disabled');
-                                }else{
-                                    $('button#addGroups').attr('disabled','disabled');
-                                }
                             }
                         });
                         //
@@ -343,18 +353,20 @@ var refereeManager = function(){
                                 $('div#groups').append(html);
                             }
                         });
-                         $('form').submit(function(){
+                         $('button[type=submit]').on('click',function(e){
+                             e.preventDefault();
                              var data = {};
+                             data.name = $('input#name').val();
                              data.referees = competitionData['referees'];
-                             console.log(competitionData['referees']);
                              data.horses = competitionData['horses'];
-                             console.log(competitionData['horses']);
-                             data.groups = ['chuj'];
+                             data.groupsNumber = groupsNumber;
+                             data.horsesInGroupNumber = horsesInGroupNumber;
+                             data.refereesInGroupNumber = refereesInGroupNumber;
                              $.ajax({
                                  url: '/competition/add',
                                  method: 'POST',
                                  dataType: 'JSON',
-                                 data: JSON.stringify(data)
+                                 data: data
                              }).done(function(data){
                                  
                              });

@@ -7,8 +7,8 @@ var Competition = new Schema({
     name: {type: String, required: true},
     isReady: {type: Boolean},
     isActive: {type: Boolean},
-    referees: [{type : Schema.Types.ObjectId, ref: 'accounts'}],
-    horses: [{type : Schema.Types.ObjectId, ref : 'horses'}],
+    referees: [{type : Schema.Types.ObjectId, ref: 'Account'}],
+    horses: [{type : Schema.Types.ObjectId, ref : 'Horse'}],
     groups: {type: Schema.Types.ObjectId, ref: 'Group'}
 });
 
