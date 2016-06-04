@@ -128,7 +128,8 @@ router.get('/list',function(req,res){
         if(req.user.hasAccess(['admin','public','referee'])){
             console.log("ADMIN");
             Competition.find({}).populate('groups').lean().exec(function(err,competitions){
-                console.log(competitions);
+                //console.log(competitions);
+                console.log(competitions[0].groups[0]._id);
                 res.json(competitions);
             });
         }else{
@@ -183,31 +184,5 @@ router.get('/activator/:competition_id',function(req,res){
 });
 
 
-router.get('/groups/:competition_id',function(req,res){
-   var role = 'public';
-     if(req.user){
-        if(req.user.hasAccess(['admin','public','referee'])){
-            console.log("ADMIN");
-            console.log("DEACTIVATING HORSE");
-            var value = false;
-            Competition.findOne({_id:req.params.competition_id}).populate('groups').lean().exec(function(err,competition){
-                console.log(competition.groups);
-                console.log(competition.groups[0].referees);
-                Group.findOne({_id:competition.groups[0]._id}).populate('horses').lean().exec(function(err,group){
-                    console.log(group.horses);
-                })
-            });
-            //TO-DO   
-        }else{
-            if(req.user.hasAccess('referee')){
-                console.log('REFEREE');
-                role = 'referee';
-            }
-            res.render('index', {user: req.user,userRole: role, msg: 'Nie posiadasz odpowiednich uprawnień!'});
-        }
-    }else{
-        res.render('user/login',{user: req.user, msg: 'Zalogu się na konto administratora!'});
-    } 
-});
 
 module.exports =router;

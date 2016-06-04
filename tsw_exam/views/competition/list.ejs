@@ -15,7 +15,7 @@
               </tr>
             </thead>
             <tbody>
-             <% for(var i=0; i < data.length; i++){ %>
+             <% var i = 0; var j = 0; var k = 0; for(i=0; i < data.length; i++){ %>
               <tr>
                 <td><%= data[i].name %></td>
                 <% if(data[i].isActive){ %>
@@ -29,9 +29,21 @@
                 <% }else{ %>
                  <a id="competitionActivator" href="/competition/activator/<%= data[i]._id %>" class="btn btn-success">Rozpocznij</a>
                 <% } %>
-                <a id="competitionShowGroups" href="/competition/groups/<%= data[i]._id %>" class="btn btn-info">Pokaż grupy</a>
+                <button id="competitionShowGroups" class="btn btn-info">Pokaż grupy</button>
                 </td>
               </tr>
+              <tr>
+              <td colspan="3">
+              <div id="groups" class="panel panel-default">
+                 <% for(j=0; j<data[i].groups.length;j++){ %>
+                        <% k = j + 1; %>
+                         <div class="panel panel-heading text-center">
+                             <a id="groupLink" href="/group/show/<%= data[i].groups[j]._id %>" class="btn btn-info">Grupa <%= k %></a>
+                         </div>
+                  <% } %>
+              </div>
+            </td>
+            </tr>
              <% } %>
             </tbody>
           </table>

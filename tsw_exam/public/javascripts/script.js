@@ -452,6 +452,8 @@ var refereeManager = function() {
             method: 'GET',
             dataType: 'JSON'
         }).done(function(data) {
+            console.log(data);
+            console.log(data[0].groups[0]._id);
             $('div#content-panel').remove();
             var html = new EJS({
                 url: 'competition/list.ejs'
@@ -459,6 +461,36 @@ var refereeManager = function() {
                 data: data
             });
             $('div.container').append(html);
+            $('div#groups').hide();
+            $('button#competitionShowGroups').each(function(){
+                $(this).on('click',function(e){
+                    $(this).closest('tr').next('tr').children('td').children('div').slideToggle();
+                    $('a#groupLink').each(function(){
+                        $(this).on('click',function(e){
+                            e.preventDefault();
+                            console.log('dupa');
+                            $('div#clicked').removeAttr('id');
+                            $(this).closest('div').attr('id','clicked');
+                            var url = $(this).attr('href');
+                            console.log(url);
+                            $.ajax({
+                                url: url,
+                                method: 'GET',
+                                dataType: 'JSON'
+                            }).done(function(data){
+                                console.log(data.referees);
+                                console.log(data.horses);
+                                var html = new EJS({
+                                    url: 'competition/templates/group.ejs'
+                                }).render({
+                                    data: data
+                                });
+                                $('div#clicked').append(html);
+                            });
+                        });
+                    });
+                });
+            });
         });
     });
 
@@ -480,22 +512,6 @@ var refereeManager = function() {
                 $('div.container').append(html);
             });
 
-        });
-    });
-    
-    $('a#competitionShowGroups').on('submit',function(e) {
-        e.preventDefault();
-        var url = $(this).attr('href');
-        $.ajax({
-            url: url,
-            method: 'GET',
-            dataType: 'JSON'
-        }).done(function(data){
-            var html = new EJS({
-                url: 'competition/group.ejs'
-            }).render({
-                data: data
-            });
         });
     });
 

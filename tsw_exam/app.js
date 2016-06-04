@@ -35,6 +35,7 @@ var competition = require('./routes/competition');
 var horse = require('./routes/horse');
 var result = require('./routes/result');
 var referee = require('./routes/referee');
+var group = require('./routes/group');
 
 var app = express();
 //adding socket.io to app
@@ -117,7 +118,7 @@ app.use('/', routes);
 app.use('/users', users);
 app.use('/referee', referee);
 app.use('/horse', horse);
-//app.use('/group', group);
+app.use('/group', group);
 app.use('/competition', competition);
 //app.use('/result', result);
 
