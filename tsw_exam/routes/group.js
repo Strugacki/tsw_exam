@@ -17,6 +17,8 @@ router.get('/show/:group_id',function(req,res){
             Group.findOne({_id:req.params.group_id}).populate('referees').populate('horses').lean().exec(function(err,group){
                 data.referees = group.referees;
                 data.horses = group.horses;
+                console.log(data.referees);
+                console.log(data.horses);
                 res.json(data);
             });
         }else{

@@ -172,11 +172,12 @@ io.on('connection', function(socket){
             socket.emit('referees',JSON.stringify(referees)); 
         });
     });
-    socket.on('KURWY',function(data){
-        console.log('WINO I PIANINO');
-    });
     
+    socket.on('disconnect',function(){
+       console.log('User disconnected from the server'); 
+    });
 });
+
 
 server.listen(serverPort,function(){
     console.log("Server running at port: "+serverPort);

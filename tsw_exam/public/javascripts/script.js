@@ -20,7 +20,6 @@ var refereeManager = function() {
             dataType: 'JSON'
         }).done(function(data) {
             $('div#content-panel').remove();
-            //console.log(data);
             var html = new EJS({
                 url: 'referee/list.ejs'
             }).render({
@@ -28,7 +27,6 @@ var refereeManager = function() {
             });
             $('div.container').append(html);
             $('div#content-panel').bind('destroyed', function() {
-                console.log('chuj');
             });
         });
     });
@@ -55,6 +53,7 @@ var refereeManager = function() {
             $('form').submit(function(e) {
                 e.preventDefault();
                 var data = {};
+                //prepare data to send with values from inputs
                 data.username = $('input#username').val();
                 data.firstName = $('input#firstName').val();
                 data.lastName = $('input#lastName').val();
@@ -68,6 +67,7 @@ var refereeManager = function() {
                     data: JSON.stringify(data),
                     contentType: "application/json",
                 }).done(function(data) {
+                    //render list view and append it
                     $('div#content-panel').remove();
                     var html = new EJS({
                         url: 'referee/list.ejs'
@@ -160,7 +160,6 @@ var refereeManager = function() {
         }).done(function(data) {
             console.log(data);
             $('div#content-panel').remove();
-            //console.log(data);
             var html = new EJS({
                 url: 'horse/list.ejs'
             }).render({
@@ -168,7 +167,7 @@ var refereeManager = function() {
             });
             $('div.container').append(html);
             $('div#content-panel').bind('destroyed', function() {
-                console.log('chuj');
+
             });
             horseActivator();
         });
@@ -350,6 +349,8 @@ var refereeManager = function() {
                     competitionData['referees'] = [];
                     var refereesForGrouping = [];
                     var horsesForGrouping = [];
+                    //
+                    //Collect info about horses that were selected and psuh them to competitionData.horses array
                     $('select#horsesList > option:selected').each(function() {
                         var horse = {
                             horseName: $(this).text(),
@@ -359,6 +360,7 @@ var refereeManager = function() {
                         horsesForGrouping.push(horse);
                     });
                     //
+                    //Collect info about referees that were selected and push them to competitionData.referees array
                     $('select#refereesList > option:selected').each(function() {
                         var referee = {
                             id: $(this).val(),
@@ -368,14 +370,19 @@ var refereeManager = function() {
                         refereesForGrouping.push(referee);
                     });
                     //
+                    //print both arrays
                     console.log(competitionData['horses']);
                     console.log(competitionData['referees']);
-                    // 
+                    //
+                    //Create options for selecting horses in group number
                     for (var i = 1; i <= competitionData['horses'].length; i++) {
                         $('select#horsesInGroupNumber').append('<option value="' + i + '">' + i + '</option>');
                     }
                     // 
                     var groupsNumber = 0;
+                    //COMBO BREAKER
+                    //When horses in group number is choosen from list, this function creates options for 
+                    //referees in group number
                     $('select#horsesInGroupNumber').change(function() {
                         horsesInGroupNumber = $(this).val();
                         $('select#refereesInGroupNumber > option').remove();
@@ -391,31 +398,19 @@ var refereeManager = function() {
                             $('select#refereesInGroupNumber').append('<option value="' + i + '">' + i + '</option>');
                         }
                     });
+                    //
                     $('select#refereesInGroupNumber').change(function() {
                         refereesInGroupNumber = $(this).val();
                         console.log('NUMER OF REFEREES:' + refereesInGroupNumber);
-                        if ($(this).val() !== null && (competitionData['horses'].length <= competitionData['referees'].length)) {}
+                        if ($(this).val() !== null && (competitionData['horses'].length <= competitionData['referees'].length)) {}//TO - DO
                     });
                     //
-                    $('button#addGroups').on('click', function() {
-                        console.log(groupsNumber);
-                        $('div#group-panel').remove();
-                        for (var i = groupsNumber; i > 0; i--) {
-                            console.log('weszlo');
-                            var html = new EJS({
-                                url: 'competition/templates/group.ejs'
-                            }).render({
-                                number: groupsNumber,
-                                referees: refereesForGrouping,
-                                horses: horsesForGrouping
-                            });
-                            $('div#groups').append(html);
-                        }
-                    });
+                    //
                     $('button[type=submit]').on('click', function(e) {
                         e.preventDefault();
                         var data = {};
                         data.name = $('input#name').val();
+                        console.log(data.name);
                         data.referees = competitionData['referees'];
                         data.horses = competitionData['horses'];
                         data.groupsNumber = groupsNumber;
@@ -443,7 +438,10 @@ var refereeManager = function() {
         });
 
     });
-
+    /**************************************************/
+    //COMBO BREAKER
+    //SHOW ALL COMPETITIONS AND GROUPS LOGIC
+    //Fetch all competitions from db
     $('a#competitionList').on('click', function(e) {
         e.preventDefault();
         var url = $(this).attr('href');
@@ -461,61 +459,67 @@ var refereeManager = function() {
                 data: data
             });
             $('div.container').append(html);
+            competitionActivator();
             $('div#groups').hide();
+            //Display groups button for every competition
             $('button#competitionShowGroups').each(function(){
                 $(this).on('click',function(e){
+                    //slide down groups panel
                     $(this).closest('tr').next('tr').children('td').children('div').slideToggle();
-                    $('a#groupLink').each(function(){
-                        $(this).on('click',function(e){
-                            e.preventDefault();
-                            console.log('dupa');
-                            $('div#clicked').removeAttr('id');
-                            $(this).closest('div').attr('id','clicked');
-                            var url = $(this).attr('href');
-                            console.log(url);
-                            $.ajax({
-                                url: url,
-                                method: 'GET',
-                                dataType: 'JSON'
-                            }).done(function(data){
-                                console.log(data.referees);
-                                console.log(data.horses);
-                                var html = new EJS({
-                                    url: 'competition/templates/group.ejs'
-                                }).render({
-                                    data: data
-                                });
-                                $('div#clicked').append(html);
+                    //Fetch information about group from db
+                });
+            });
+            $('a#groupLink').each(function(){
+                $(this).on('click',function(e){
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
+                    var url = $(this).attr('href');
+                    console.log(url);
+                    $('div#clicked').removeAttr('id');
+                    //check if button was already clicked / if no, then fetch data and mark it as clicked with id attribute
+                        $(this).closest('div').attr('id','clicked');
+                        $.ajax({
+                            url: url,
+                            method: 'GET',
+                            dataType: 'JSON'
+                        }).done(function(data){
+                            //render group panel and append it
+                            var html = new EJS({
+                                url: 'competition/templates/group.ejs'
+                            }).render({
+                                data: data
                             });
-                        });
+                            $('div#clicked').append(html);
+                        });    
+                });
+            });
+        });
+    });
+
+    
+    var competitionActivator = function(){
+        $('a#competitionActivator').each(function() {
+            $(this).on('click', function(e) {
+                e.preventDefault();
+                var requestUrl = $(this).attr('href');;
+                $.ajax({
+                    url: requestUrl,
+                    method: 'GET',
+                    dataType: 'JSON',
+                }).done(function(data) {
+                    $('div#content-panel').remove();
+                    var html = new EJS({
+                        url: 'competition/list.ejs'
+                    }).render({
+                        data: data
                     });
+                    $('div.container').append(html);
+                    $('div#groups').hide();
                 });
+
             });
         });
-    });
-
-    $('a#competitionActivator').each(function() {
-        $(this).on('click', function(e) {
-            e.preventDefault();
-            var requestUrl = $(this).attr('href');;
-            $.ajax({
-                url: requestUrl,
-                method: 'GET',
-                dataType: 'JSON',
-            }).done(function(data) {
-                $('div#content-panel').remove();
-                var html = new EJS({
-                    url: 'competition/list.ejs'
-                }).render({
-                    data: data
-                });
-                $('div.container').append(html);
-            });
-
-        });
-    });
-
-    //  });
+    }
 }
 
 /***************************************************************************/
@@ -524,6 +528,6 @@ $(document).ready(function() {
     refereeManager();
     $('div#content-panel').bind('destroyed', function() {
         console.log('dom changed');
-        refereeManager();
+        refereeManager;
     });
 });
