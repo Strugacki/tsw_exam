@@ -38,7 +38,8 @@ router.route('/add').get(function(req, res, next) {
         birthDate: req.body.birthDate,
         ownerFirstName: req.body.ownerFirstName,
         ownerLastName: req.body.ownerLastName,
-        isActive: true
+        isActive: true,
+        isVoteActive: false,
     });
     horseToAdd.save(function(err) {
         if (err) {

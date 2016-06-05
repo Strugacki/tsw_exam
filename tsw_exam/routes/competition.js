@@ -103,7 +103,6 @@ router.route('/add').get(function(req,res){
     var competitionToAdd = new Competition({
         name: req.body.name,
         isActive: false,
-        isReady: true,
         groups: groups
     });
     

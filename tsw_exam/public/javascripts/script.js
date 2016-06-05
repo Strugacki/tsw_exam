@@ -538,6 +538,16 @@ var refereeManager = function() {
                 data: data
             });
             $('div.container').append(html);
+            $('.single-slider').jRange({
+                from: 0,
+                to: 20,
+                step: 2,
+                scale: [0,2,4,6,8,10,12,14,16,18,20],
+                format: '%s',
+                width: 400,
+                showLabels: true,
+                snap: true
+            });
         });
         
     });

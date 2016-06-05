@@ -5,7 +5,6 @@ var Schema = mongoose.Schema;
 
 var Competition = new Schema({
     name: {type: String, required: true},
-    isReady: {type: Boolean},
     isActive: {type: Boolean},
     groups: [{type: Schema.Types.ObjectId, ref: 'Group'}]
 });
