@@ -11,15 +11,13 @@
     <div class="collapse navbar-collapse" id="myNavbar">
       <ul class="nav navbar-nav">
         <li class="active"><a href="/">Strona domowa</a></li>
-        <li><a href="/contest/list">Zawody</a></li>
-        <li><a href="/result/list">Wyniki</a></li>
+        <li><a id="competitionRate" href="/competition/rate">Oceń zawody</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
        <% if (user){ %>
         <li><a href="/users/logout"><span class="glyphicon glyphicon-log-out"></span> Zalogowany jako <u><%= user.username %></u> (wyloguj)</a></li>
        
        <% }else{ %>
-           <li><a href="/users/registration"><span class="glyphicon glyphicon-user"></span> Rejestracja</a></li>
            <li><a href="/users/login"><span class="glyphicon glyphicon-log-in"></span> Logowanie</a></li>
        <% } %>
       </ul>

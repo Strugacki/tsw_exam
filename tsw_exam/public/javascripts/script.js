@@ -520,6 +520,30 @@ var refereeManager = function() {
             });
         });
     }
+    
+    
+    $('a#competitionRate').on('click',function(e){
+        e.preventDefault();
+        var url = $(this).attr('href');
+        $.ajax({
+            url: url,
+            method: 'GET',
+            dataType: 'JSON'
+        }).done(function(data){
+            console.log(data);
+            $('div#content-panel').remove();
+            var html = new EJS({
+                url: 'competition/rate.ejs'
+            }).render({
+                data: data
+            });
+            $('div.container').append(html);
+        });
+        
+    });
+    
+    
+    
 }
 
 /***************************************************************************/

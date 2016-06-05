@@ -40,6 +40,7 @@ router.get('/login',function(req,res){
 });
 
 router.post('/login', passport.authenticate('local'), function(req, res){
+    console.log(req.user['_id']);
     if(!req.user.isActive){
         req.logout();
         res.render('user/login', {user: req.user, msg: 'Twoje konto nie jest aktywne. Skontaktuj się z adminitratorem!'}); 

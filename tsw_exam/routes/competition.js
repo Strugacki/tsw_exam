@@ -8,6 +8,7 @@ var Result = require('../models/result');
 var Competition = require('../models/competition');
 var router = express.Router();
 var async = require('async');
+var _ = require('lodash');
 
 router.route('/add').get(function(req,res){
     var role = 'public';
@@ -128,8 +129,6 @@ router.get('/list',function(req,res){
         if(req.user.hasAccess(['admin','public','referee'])){
             console.log("ADMIN");
             Competition.find({}).populate('groups').lean().exec(function(err,competitions){
-                //console.log(competitions);
-                console.log(competitions[0].groups[0]._id);
                 res.json(competitions);
             });
         }else{
@@ -176,6 +175,53 @@ router.get('/activator/:competition_id',function(req,res){
                 console.log('REFEREE');
                 role = 'referee';
             }
+            res.render('index', {user: req.user,userRole: role, msg: 'Nie posiadasz odpowiednich uprawnień!'});
+        }
+    }else{
+        res.render('user/login',{user: req.user, msg: 'Zalogu się na konto administratora!'});
+    }
+});
+
+router.route('/rate').get(function(req,res,next){
+    var role = 'public';
+    console.log('weszlo');
+    if(req.user){
+        if(req.user.hasAccess(['public','referee'])){
+            console.log("REFEREE");
+            console.log(req.user._id);
+            Competition.findOne({isActive: true}).populate('groups').populate('referees').lean().exec(function(err,competition){
+                var hasPermission = false;
+                var groupToRateId = null;
+                var array = [];
+                var value;
+                var userId;
+                for(var i = 0;i<competition.groups.length;i++){
+                    array = competition.groups[i].referees;
+                    for(var j = 0;j<array.length;j++){
+                        var value = String(array[j]);
+                        var userId = String(req.user._id);
+                        if(value === userId){
+                            hasPermission = true;
+                            groupToRateId = String(competition.groups[i]._id);
+                            console.log(hasPermission);
+                            console.log(groupToRateId);
+                        }
+                    }
+                }
+                if(hasPermission){
+                    Group.find({_id: groupToRateId}).populate('horses').lean().exec(function(err,horses){
+                        console.log(horses[0]);
+                        res.json(horses);
+                    });
+                }
+                
+            });
+        }else{
+            if(req.user.hasAccess('public','referee')){
+                console.log('REFEREE');
+                role = 'referee';
+            }
+            console.log(role);
             res.render('index', {user: req.user,userRole: role, msg: 'Nie posiadasz odpowiednich uprawnień!'});
         }
     }else{
