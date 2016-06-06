@@ -6,7 +6,7 @@
     <script src="/socket.io/socket.io.js"></script>
     <script src="/javascripts/socket.js" ></script>
     <script src="/javascripts/ejs.js"></script>
-    <script src="/javascripts/script.js"></script> 
+    <script src="/javascripts/guest.js"></script> 
     <script src="/bootstrap.js" ></script>
   </head>
  <nav class="navbar navbar-inverse navbar-fixed-top">
@@ -22,13 +22,7 @@
     <div class="collapse navbar-collapse" id="myNavbar">
       <ul class="nav navbar-nav">
         <li class="active"><a href="/">Strona domowa</a></li>
-        <li class="dropdown">
-            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Zawody<span class="caret"></span></a>
-            <ul class="dropdown-menu">
-                <li><a href="/contest/list">lista</a></li>
-            </ul>
-        </li>
-        <li><a href="/result/list">Wyniki</a></li>
+        <li><a id="resultList" href="/result/show">Wyniki</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
        <% if (user){ %>

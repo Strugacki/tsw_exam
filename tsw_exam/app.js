@@ -91,6 +91,7 @@ app.use(passport.session());
 var Account = require('./models/account');
 var Horse = require('./models/horse');
 var Competition = require('./models/competition');
+var Result = require('./models/result');
 passport.use(Account.createStrategy());
 passport.serializeUser(Account.serializeUser());//this and below store user login
 passport.deserializeUser(Account.deserializeUser());
@@ -196,6 +197,7 @@ io.on('connection', function(socket){
         });
     });
     
+    //GETS INFO THAT COMPETITION HAS BEEN STARTED, CHECKS IF ITS TRUE AND SEND DATA TO APPRIOPRIATE REFEREES
     socket.on('startCompetition',function(data){
         Competition.findOne({isActive: true}).lean().exec(function(err,competition){
            if(err){
@@ -210,9 +212,10 @@ io.on('connection', function(socket){
         });   
     });
     
-    socket.on('ratedHorseData',function(data){
+    //GETS DATA FROM REFEREE WITH HORSE RATES AND SEND TO GUEST LIVE SCORE TABLE
+    socket.on('refreshLiveScore',function(data){
         Result.find({}).populate('competition').populate('horse').lean().exec(function(err,results){
-           io.sockets.emit('liveScore'); 
+           io.sockets.emit('refreshScore',results); 
         });
     });
 });

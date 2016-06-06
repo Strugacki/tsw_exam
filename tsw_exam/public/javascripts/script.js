@@ -21,7 +21,8 @@ var adminManager = function() {
             }
         }
     }
-
+    
+    /************************************************************/
     //GET ALL REFEREES
     $('a#refereeList').click(function(e) {
         e.preventDefault();
@@ -43,7 +44,8 @@ var adminManager = function() {
         });
     });
 
-    /* GET AND POST EDIT REFEREE FORM */
+    /************************************************************/
+    //REFEREE EDIT EVENT(GET AND POST)
     var refereeEdit = function(){
             $('a#refereeEdit').on('click', function(e) {
             e.preventDefault();
@@ -88,13 +90,16 @@ var adminManager = function() {
                             data: data
                         });
                         $('div.container').append(html);
+                        refereeEdit();
+                        refereeActivator();
                     });
                 });
             });
         });
     }
 
-    //GET AND POST ADD REFEREE FORM
+    /************************************************************/
+    //REFEREE ADD EVENT(GET AND POST)
     $('a#refereeAdd').each(function() {
         $(this).on('click', function(e) {
             e.preventDefault();
@@ -134,13 +139,16 @@ var adminManager = function() {
                             data: data
                         });
                         $('div.container').append(html);
+                        refereeEdit();
+                        refereeActivator();
                     });
                 });
             });
         });
     });
 
-
+    /************************************************************/
+    //REFEREE ACTIVATOR FUNCTION
     var refereeActivator = function(){
         $('a#refereeActivator').each(function() {
         $(this).on('click', function(e) {
@@ -176,7 +184,8 @@ var adminManager = function() {
     }
 
     /******************************HORSE MANAGEMENT*****************************/
-    //GET ALL HORSES
+    /************************************************************/
+    //GET ALL REFEREES
     $('a#horseList').click(function(e) {
         e.preventDefault();
         var requestUrl = $(this).attr('href');
@@ -201,7 +210,8 @@ var adminManager = function() {
         });
     });
 
-    /* GET AND POST EDIT HORSE FORM */
+    /************************************************************/
+    //HORSE EDIT EVENT(GET AND POST)
     var horseEdit = function(){
         $('a#horseEdit').on('click', function(e) {
         e.preventDefault();
@@ -243,13 +253,16 @@ var adminManager = function() {
                         data: data
                     });
                     $('div.container').append(html);
+                    horseActivator();
+                    horseEdit();
                 });
             });
         });
         });
     }
 
-    //GET AND POST ADD HORSE FORM
+    /************************************************************/
+    //HORSE ADD EVENT(GET AND POST)
     $('a#horseAdd').each(function() {
         $(this).on('click', function(e) {
             e.preventDefault();
@@ -288,13 +301,16 @@ var adminManager = function() {
                             data: data
                         });
                         $('div.container').append(html);
+                        horseActivator();
+                        horseEdit();
                     });
                 });
             });
         });
     });
 
-
+    /************************************************************/
+    //HORSE ACTIVATOR FUNCTION
     var horseActivator = function() {
         $('a#horseActivator').each(function() {
             $(this).on('click', function(e) {
@@ -324,7 +340,6 @@ var adminManager = function() {
 
     /************************COMPETITION MANAGEMENT*****************************/
 
-    //  $('a#competitionAdd').each(function(){
     $('a#competitionAdd').on('click', function(e) {
         var competitionData = {};
         e.preventDefault();
@@ -508,6 +523,7 @@ var adminManager = function() {
                     e.preventDefault();
                     e.stopImmediatePropagation();
                     var url = $(this).attr('href');
+                    $(this).fadeOut();
                     console.log(url);
                     $('div#clicked').removeAttr('id');
                     //check if button was already clicked / if no, then fetch data and mark it as clicked with id attribute
@@ -530,27 +546,14 @@ var adminManager = function() {
         });
     });
 
-    
+    /************************************************************/
+    //COMPETITION ACTIVATOR FUNCTION
     var competitionActivator = function(){
+        if($('a#competitionActivator').hasClass('btn-warning')){
+           $('a#competitionActivator.btn-success').attr('disabled','disabled'); 
+        }
         $('a#competitionActivator').each(function() {
             $(this).on('click', function(e) {
-               /* e.preventDefault();
-                var requestUrl = $(this).attr('href');
-                $.ajax({
-                    url: requestUrl,
-                    method: 'GET',
-                    dataType: 'JSON',
-                }).done(function(data) {
-                    $('div#content-panel').remove();
-                    var html = new EJS({
-                        url: 'competition/list.ejs'
-                    }).render({
-                        data: data
-                    });
-                    $('div.container').append(html);
-                    socket.emit('startCompetition',true);
-                    $('div#groups').hide();
-                });*/
                 e.preventDefault();
                 e.stopImmediatePropagation();
                 var requestUrl = $(this).attr('href');
@@ -558,10 +561,12 @@ var adminManager = function() {
                     $(this).text('Zakończ');
                     $(this).removeClass('btn-success');
                     $(this).addClass('btn-warning');
+                    $('a#competitionActivator.btn-success').attr('disabled','disabled');
                 }else{
                     $(this).text('Rozpocznij');
                     $(this).removeClass('btn-warning');
                     $(this).addClass('btn-success');
+                    $('a#competitionActivator.btn-success').removeAttr('disabled');
                 }
                 $.ajax({
                     url: requestUrl,
@@ -569,12 +574,14 @@ var adminManager = function() {
                     dataType: 'JSON',
                 }).done(function(data){
                     console.log(data);
+                    socket.emit('startCompetition',true);
                 });
-
             });
         });
     }  
     
+    /************************************************************/
+    //SHOWS ACTIVE COMPETITION 
     $('a#competitionActivated').on('click', function(e) {
         e.preventDefault();
         var url = $(this).attr('href');
@@ -606,6 +613,7 @@ var adminManager = function() {
                 $(this).on('click',function(e){
                     e.preventDefault();
                     e.stopImmediatePropagation();
+                    $(this).fadeOut();
                     var url = $(this).attr('href');
                     console.log(url);
                     $('div#clicked').removeAttr('id');

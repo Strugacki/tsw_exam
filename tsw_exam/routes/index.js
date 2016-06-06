@@ -5,6 +5,7 @@ var Account = require('../models/account');
 /* GET home page. */
 router.get('/', function(req, res) {
     //console.log("Access: " + req.session.user.hasAccess('user'));
+    console.log(req.user);
     var role = 'public';
     if(req.user){
         if(req.user.hasAccess('public')){

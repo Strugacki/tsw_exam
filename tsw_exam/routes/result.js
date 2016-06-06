@@ -2,22 +2,22 @@ var express = require('express');
 var passport = require('passport');
 var expressValidator = require('express-validator');
 var Horse = require('../models/horse');
-var Competition = require('../models/horse');
+var Competition = require('../models/competition');
 var Result = require('../models/result');
 var router = express.Router();
 
 
 router.post('/rate/horse/:id_horse',function(req,res){
-    var horseId = req.params._id;
+    var horseId = req.params.id_horse;
     var overall = req.body.overall;
     console.log('OVERALL: ' + overall);
     console.log('HORSE ID: ' + horseId);
-    console.log('COMPETITION ID: ' + 0);
     Competition.findOne({isActive: true}).lean().exec(function(err,competition){
+        console.log('COMPETITION ID: ' + competition._id);
         var result = new Result({
             overall: overall,
             horse: horseId,
-            competition: competition._id,
+            competition: competition._id
         });
         result.save(function(error){
         if(error){
@@ -27,6 +27,14 @@ router.post('/rate/horse/:id_horse',function(req,res){
         }
     });  
     })
+});
+
+
+router.get('/show',function(req,res){
+    Result.find({}).populate('competition').populate('horse').lean().exec(function(err,results){
+        console.log(JSON.stringify(results));
+        res.json(results);
+    });
 });
 
 module.exports = router;
