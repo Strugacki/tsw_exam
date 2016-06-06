@@ -190,9 +190,11 @@ io.on('connection', function(socket){
     socket.on('horseActivated',function(data){
         Horse.findOne({_id: data}).lean().exec(function(err,horse){
            if(horse.isVoteActive){
+               console.log('HORSE ACTIVATED');
                io.sockets.emit('horseActivated',horse);
            }else{
-               io.sockets.emit('horseDeactivated',horse._id);
+               console.log('HORSE DEACTIVATED');
+               io.sockets.emit('horseDeactivated',horse);
            } 
         });
     });

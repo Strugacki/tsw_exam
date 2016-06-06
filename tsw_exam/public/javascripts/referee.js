@@ -37,6 +37,7 @@ var refereeManager = function() {
             });
             $('div.container').append(html);
             horseActivated();
+            horseDeactivated();
         });
     });
     
@@ -102,29 +103,34 @@ var refereeManager = function() {
         }
         });
     }
-    
-    socket.on('horseDeactivated',function(data){
-        setTimeout(function(){ alert("Pozostała Ci minuta na uzupełnienie ocen!"); }, 0);
-        setTimeout(function(){ alert("Za 10 sekund nastąpi zamknięcie ocen, wyślij je teraz!"); }, 50000);
-        setTimeout(function(){ 
-            $.ajax({
-                url: '/competition/rate',
-                method: 'GET',
-                dataType: 'JSON'
-            }).done(function(data){
-                console.log(data);
-                $('div#content-panel').remove();
-                var html = new EJS({
-                    url: 'competition/templates/rateHorseList.ejs'
-                }).render({
-                    horses: data
+    //var horseDeactivated = function(){
+        socket.on('horseDeactivated',function(data){
+        console.log("HORSE DEACTIVATED ID: " + data._id);
+        if($('button[id*='+data._id+']').length){
+            console.log('jest');
+            setTimeout(function(){ alert("Pozostała Ci minuta na uzupełnienie ocen!"); }, 0);
+            setTimeout(function(){ alert("Za 10 sekund nastąpi zamknięcie ocen, wyślij je teraz!"); }, 50000);
+            setTimeout(function(){ 
+                $.ajax({
+                    url: '/competition/rate',
+                    method: 'GET',
+                    dataType: 'JSON'
+                }).done(function(data){
+                    console.log(data);
+                    $('div#content-panel').remove();
+                    var html = new EJS({
+                        url: 'competition/templates/rateHorseList.ejs'
+                    }).render({
+                        horses: data
+                    });
+                    $('div.container').append(html);
+                    alert("Ocenianie konia zostało zakończone, proszę czekać na ponowne otwarcie panelu!");
                 });
-                $('div.container').append(html);
-                alert("Ocenianie konia zostało zakończone, proszę czekać na ponowne otwarcie panelu!");
-            });
-        
-        }, 60000);     
-    });
+
+            }, 60000);
+        }
+        });
+    //}
     //HORSE RATE VIEW
     $('a#competitionRate').on('click',function(e){
         e.preventDefault();

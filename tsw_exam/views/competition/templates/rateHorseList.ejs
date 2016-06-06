@@ -2,13 +2,14 @@
     <div class="panel panel-default">
         <div class="panel panel-heading text-center">
             <h1>Witaj w panelu sędziego!!</h1>
+            <div class="alert alert-info text-center">Gdy będziesz mógł przystąpić do oceny, zostanie uaktywniony odpowiedni przycisk. Naciśnięcie go powoduje przeniesieie do panelu głosowania. Zbliżające się zakończenie oceniania zostaje sygnalizowane komunikatem. Dziękujemy!</div>
         </div>
         <div class="panel panel-body">
             <div class="horsesList">
                 <% for(var i=0;i<horses.length; i++){ %>
                 <% var k = i + 1; %>
                 <div class="row text-center">
-                    <button id="<%= horses[i]._id %>" class="btn btn-lg btn-info" disabled='disabled'>Koń o numerze: <%= k %> </button>
+                    <button id="<%= horses[i]._id %>" class="btn btn-lg btn-danger" disabled='disabled'>Koń o numerze: <%= k %> </button>
                     <br>
                 </div>
                 <br>

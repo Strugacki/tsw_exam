@@ -22,6 +22,38 @@ var adminManager = function() {
         }
     }
     
+    var showList = function(){
+        $('a#resultList').on('click',function(e){
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            $.ajax({
+                url: $(this).attr('href'),
+                method: 'GET',
+                dataType: 'JSON'
+            }).done(function(data){
+                console.log(data);
+                $('div#content-panel').remove();
+                var html = new EJS({
+                    url: 'result/list.ejs'
+                }).render({
+                    data: data
+                });
+                $('div.container').append(html);
+                socket.on('refreshScore',function(data){
+                    $('div#content-panel').remove();
+                    var html = new EJS({
+                        url: 'result/list.ejs'
+                    }).render({
+                        data: data
+                    });
+                    $('div.container').append(html);    
+                });
+            })
+        });
+    }
+    
+    showList();
+    
     /************************************************************/
     //GET ALL REFEREES
     $('a#refereeList').click(function(e) {
@@ -433,6 +465,7 @@ var adminManager = function() {
                     //When horses in group number is choosen from list, this function creates options for 
                     //referees in group number
                     $('select#horsesInGroupNumber').change(function() {
+                        groupsNumber = 0;
                         horsesInGroupNumber = $(this).val();
                         $('select#refereesInGroupNumber > option').remove();
                         console.log('NUMER OF HORSES:' + horsesInGroupNumber);
@@ -631,7 +664,8 @@ var adminManager = function() {
                                 data: data
                             });
                             $('div#clicked').append(html);
-                            $('button.rateButton').on('click',function(){
+                            //
+                          /*  $('button.rateButton').on('click',function(){
                                 var id = $(this).attr('id');
                                 if($(this).text() === "Zacznij ocenianie"){
                                     $(this).text('Zakończ ocenianie');
@@ -651,13 +685,38 @@ var adminManager = function() {
                                     console.log('HORSE RATE ACTIVATING SUCCESS');
                                     socket.emit('horseActivated',id);
                                 });
+                            });*/
+                            //
+                            $('button.rateButton').each(function(){
+                               $(this).on('click',function(e){
+                                   e.preventDefault();
+                                   e.stopImmediatePropagation();
+                               var id = $(this).attr('id');
+                                if($(this).text() === "Zacznij ocenianie"){
+                                    $(this).text('Zakończ ocenianie');
+                                    $(this).removeClass('btn-success');
+                                    $(this).addClass('btn-danger');
+                                }else{
+                                    $(this).text('Zacznij ocenianie');
+                                    $(this).removeClass('btn-danger');
+                                    $(this).addClass('btn-success');
+                                }
+                                console.log('HORSE ID: ' + id); 
+                                $.ajax({
+                                    url: '/horse/rateActivator/'+$(this).attr('id'),
+                                    method: 'GET',
+                                    dataType: 'JSON'
+                                }).done(function(data){
+                                    console.log('HORSE RATE ACTIVATING SUCCESS');
+                                    socket.emit('horseActivated',id);
+                                });   
+                               });
                             });
                     });    
                 });
             });
         });
     });
-    
     
 }
 
