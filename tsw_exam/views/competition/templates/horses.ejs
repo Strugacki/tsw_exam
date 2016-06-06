@@ -18,10 +18,14 @@
             <ul class="list-group">
                 <% for(var j = 0;j<data.horses.length;j++){ %>
                     <li class="list-group-item"><%= data.horses[j]['horseName'] %>
+                    <% if(data.horses[j]['isVoteActive']){ %>
+                     <button id="<%= data.horses[j]['_id'] %>" class='btn btn-danger btn-sm rateButton'>Zakończ ocenianie</button>
+                    <% }else{ %>
+                     <button id="<%= data.horses[j]['_id'] %>" class='btn btn-success btn-sm rateButton'>Zacznij ocenianie</button>
+                    <% } %>
                     </li>
                 <% } %>
             </ul>
         </div>
     </div>
 </div>
-  

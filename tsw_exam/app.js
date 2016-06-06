@@ -91,6 +91,7 @@ app.use(passport.session());
 //Account model initialization
 var Account = require('./models/account');
 var Horse = require('./models/horse');
+var Competition = require('./models/competition');
 passport.use(Account.createStrategy());
 passport.serializeUser(Account.serializeUser());//this and below store user login
 passport.deserializeUser(Account.deserializeUser());
@@ -163,18 +164,55 @@ io.on('connection', function(socket){
     console.log('User connected to server');
     socket.emit('message','new connection');
     socket.on('reqH',function(data){
+        console.log('jest');
         Horse.find({},function(err,horses){
            socket.emit('horses',JSON.stringify(horses)); 
         });
     });
     socket.on('reqR',function(data){
         Account.find({role:'referee'},function(err,referees){
-            socket.emit('referees',JSON.stringify(referees)); 
+            socket.emit('referees',JSON.stringify(referees));
+            console.log('jest');
         });
     });
     
     socket.on('disconnect',function(){
        console.log('User disconnected from the server'); 
+    });
+    socket.on('horseActivated',function(data){
+        console.log(data);
+      /*  Horse.findOne({_id:data}).lean().exec(function(err,horse){
+            console.log('horse to rate: ' + horse);
+            io.sockets.emit('horseToRate',horse);
+        });*/
+        Horse.find({isVoteActive: true}).lean().exec(function(err,horses){
+            console.log(JSON.stringify(horses));
+           io.sockets.emit('horsesToRate',horses); 
+        });
+    });
+    
+    socket.on('horseActivated',function(data){
+        Horse.findOne({_id: data}).lean().exec(function(err,horse){
+           if(horse.isVoteActive){
+               io.sockets.emit('horseActivated',horse);
+           }else{
+               io.sockets.emit('horseDeactivated',horse._id);
+           } 
+        });
+    });
+    
+    socket.on('startCompetition',function(data){
+        Competition.findOne({isActive: true}).lean().exec(function(err,competition){
+           if(err){
+               console.log('ERROR: ' + err);
+           }else{
+               if(competition === null){
+                io.sockets.emit('removeForm',true);   
+               }else{
+                    io.sockets.emit('renderForm',true);
+               }
+           } 
+        });   
     });
 });
 

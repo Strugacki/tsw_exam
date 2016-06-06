@@ -7,10 +7,12 @@ socket.on("referees",function(referees){
     console.log(referees);
 });
 
-socket.on("message",function(data){
-    console.log(data); 
-});
-
 socket.on("horses",function(data){
     console.log(data);
+
+    console.log('skrypt');
+    
+socket.on('test',function(data){
+        console.log('hej' + data);
+});
 });

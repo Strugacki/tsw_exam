@@ -1,0 +1,19 @@
+<div id="content-panel" class="col-lg-12 col-md-12 col-sm-12">
+    <div class="panel panel-default">
+        <div class="panel panel-heading text-center">
+            <h1>Witaj w panelu sędziego!!</h1>
+        </div>
+        <div class="panel panel-body">
+            <div class="horsesList">
+                <% for(var i=0;i<horses.length; i++){ %>
+                <% var k = i + 1; %>
+                <div class="row text-center">
+                    <button id="<%= horses[i]._id %>" class="btn btn-lg btn-info" disabled='disabled'>Koń o numerze: <%= k %> </button>
+                    <br>
+                </div>
+                <br>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</div>

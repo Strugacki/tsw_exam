@@ -150,7 +150,52 @@ router.post('/edit/:horse_id', function(req, res) {
     });
 });
 
-
+router.get('/get/:horse_id',function(req,res){
+    var role = 'public';
+    if(req.user){
+        if(req.user.hasAccess(['public','referee'])){
+            console.log("REFEREE");
+            Competition.findOne({isActive: true}).populate('groups').populate('horses').populate('referees').lean().exec(function(err,competition){
+                console.log(competition.referees);
+                console.log(competition.horses);
+                var hasPermission = false;
+                var groupToRateId = null;
+                var array = [];
+                var value;
+                var userId;
+              /*  for(var i = 0;i<competition.groups.length;i++){
+                    array = competition.groups[i].referees;
+                    for(var j = 0;j<array.length;j++){
+                        var value = String(array[j]);
+                        var userId = String(req.user._id);
+                        if(value === userId){
+                            hasPermission = true;
+                            groupToRateId = String(competition.groups[i]._id);
+                            console.log(hasPermission);
+                            console.log(groupToRateId);
+                        }
+                    }
+                }
+                if(hasPermission){
+                    Group.findOne({_id: groupToRateId}).populate('horses').lean().exec(function(err,group){
+                        console.log(group.horses);
+                        res.json(group);
+                    });
+                }*/
+                
+            });
+        }else{
+            if(req.user.hasAccess('public','referee')){
+                console.log('REFEREE');
+                role = 'referee';
+            }
+            console.log(role);
+            res.render('index', {user: req.user,userRole: role, msg: 'Nie posiadasz odpowiednich uprawnień!'});
+        }
+    }else{
+        res.render('user/login',{user: req.user, msg: 'Zalogu się na konto administratora!'});
+    }
+});
 
 //Activate Referee's Account
 router.get('/activator/:horse_id', function(req, res) {
@@ -180,6 +225,53 @@ router.get('/activator/:horse_id', function(req, res) {
                 Horse.find({}).lean().exec(function(err, horses) {
                     res.json(horses);
                 });
+            });
+            //TO-DO   
+        } else {
+            if (req.user.hasAccess('referee')) {
+                console.log('REFEREE');
+                role = 'referee';
+            }
+            res.render('index', {
+                user: req.user,
+                userRole: role,
+                msg: 'Nie posiadasz odpowiednich uprawnień!'
+            });
+        }
+    } else {
+        res.render('user/login', {
+            user: req.user,
+            msg: 'Zalogu się na konto administratora!'
+        });
+    }
+});
+
+router.get('/rateActivator/:horse_id', function(req, res) {
+    var role = 'public';
+    if (req.user) {
+        if (req.user.hasAccess(['admin', 'public', 'referee'])) {
+            console.log("ADMIN");
+            console.log('HORSE RATE ACTIVATING');
+            console.log(req.params.horse_id);
+            var value = false;
+            Horse.findOne({
+                _id: req.params.horse_id
+            }, function(err, horse) {
+                console.log(horse);
+                console.log('HORSE VOTE ACTIVATION STATUS: ' + horse.isVoteActive);
+                if (horse.isVoteActive) {
+                    value = false;
+                    console.log(value);
+                } else {
+                    console.log(value);
+                    value = true;
+                }
+                horse.update({
+                    isVoteActive: value
+                }, function(error) {
+                    console.log(error);
+                });
+                res.json('OK');
             });
             //TO-DO   
         } else {

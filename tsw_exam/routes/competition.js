@@ -56,6 +56,16 @@ router.route('/add').get(function(req,res){
         //Randomizing referees and assigning to group
         for(var j = 0;j<refereesInGroupNumber;j++){
             console.log('REFEREES TMP:' + refereesTmp);
+            var index;
+            var refereeID;
+            if(refereesTmp.length == 1){
+                index = 0;
+                refereeID = refereesTmp[index];
+            }else{
+                index = getRandomIndex(0,(refereesTmp.length - 1));
+                refereeID = refereesTmp[index];
+                console.log("INDEX:" + index +' ' + refereeID); 
+            }
             var index = getRandomIndex(0,(refereesTmp.length - 1));
             var refereeID = refereesTmp[index];
             console.log("INDEX:" + index +' ' + refereeID);
@@ -67,8 +77,15 @@ router.route('/add').get(function(req,res){
         //Randomizing horses and assigning to group
         for(var k = 0; k<horsesInGroupNumber;k++){
             console.log('Horses TMP:' + horsesTmp);
-            var index1 = getRandomIndex(0,(horsesTmp.length - 1));
-            var horseID = horsesTmp[index];
+            var index1;
+            var horseID;
+            if(horsesTmp.length == 1){
+                index1 = 0;
+                horseID = horsesTmp[index1]
+            }else{
+                index1 = getRandomIndex(0,(horsesTmp.length - 1));
+                horseID = horsesTmp[index1];
+            }
             console.log("INDEX1:" + index1 + ' ' + horseID);
             horsesTmp.splice(index1,1);
             horses.push(horseID); 
@@ -161,7 +178,6 @@ router.get('/activator/:competition_id',function(req,res){
                     value = true;
                 }
                 competition.update({isActive: value}, function(error){
-                    console.log('dupe');
                     console.log(error);
                 });
                 Competition.find({}).lean().exec(function(err,competition){
@@ -183,11 +199,9 @@ router.get('/activator/:competition_id',function(req,res){
 
 router.route('/rate').get(function(req,res,next){
     var role = 'public';
-    console.log('weszlo');
     if(req.user){
         if(req.user.hasAccess(['public','referee'])){
             console.log("REFEREE");
-            console.log(req.user._id);
             Competition.findOne({isActive: true}).populate('groups').populate('referees').lean().exec(function(err,competition){
                 var hasPermission = false;
                 var groupToRateId = null;
@@ -208,9 +222,9 @@ router.route('/rate').get(function(req,res,next){
                     }
                 }
                 if(hasPermission){
-                    Group.find({_id: groupToRateId}).populate('horses').lean().exec(function(err,horses){
-                        console.log(horses[0]);
-                        res.json(horses);
+                    Group.findOne({_id: groupToRateId}).populate('horses').lean().exec(function(err,group){
+                        console.log(group.horses);
+                        res.json(group.horses);
                     });
                 }
                 
@@ -228,6 +242,27 @@ router.route('/rate').get(function(req,res,next){
     }
 });
 
+
+//Render view for active competition and gives a permission to enable and disable horse for rating
+router.get('/activated',function(req,res){
+     var role = 'public';
+    if(req.user){
+        if(req.user.hasAccess(['admin','public','referee'])){
+            console.log("ADMIN");
+            Competition.find({isActive: true}).populate('groups').lean().exec(function(err,competition){
+                res.json(competition);
+            });
+        }else{
+            if(req.user.hasAccess('referee')){
+                console.log('REFEREE');
+                role = 'referee';
+            }
+            res.render('index', {user: req.user, userRole: role, msg: 'Nie posiadasz odpowiednich uprawnień!'});
+        }
+    }else{
+        res.render('user/login',{user: req.user, msg: 'Zalogu się na konto administratora!'});
+    }
+});
 
 
 module.exports =router;

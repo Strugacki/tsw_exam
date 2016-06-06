@@ -1,6 +1,18 @@
 /******************************REFEREE MANAGEMENT***************************/
 //GET ALL REFEREES
-var refereeManager = function() {
+
+var adminManager = function() {
+    
+    var URL_SERVER = "https://localhost:3000";
+    var socket = io.connect(URL_SERVER);
+
+    socket.on("message",function(data){
+        console.log(data); 
+    });
+
+    socket.on('test',function(data){
+                    console.log('hej' + data);
+    });
 
     $.event.special.destroyed = {
         remove: function(o) {
@@ -490,7 +502,7 @@ var refereeManager = function() {
                                 data: data
                             });
                             $('div#clicked').append(html);
-                        });    
+                    });    
                 });
             });
         });
@@ -501,7 +513,7 @@ var refereeManager = function() {
         $('a#competitionActivator').each(function() {
             $(this).on('click', function(e) {
                 e.preventDefault();
-                var requestUrl = $(this).attr('href');;
+                var requestUrl = $(this).attr('href');
                 $.ajax({
                     url: requestUrl,
                     method: 'GET',
@@ -514,44 +526,88 @@ var refereeManager = function() {
                         data: data
                     });
                     $('div.container').append(html);
+                    socket.emit('startCompetition',true);
                     $('div#groups').hide();
                 });
 
             });
         });
-    }
+    }  
     
-    
-    $('a#competitionRate').on('click',function(e){
+    $('a#competitionActivated').on('click', function(e) {
         e.preventDefault();
         var url = $(this).attr('href');
         $.ajax({
             url: url,
             method: 'GET',
             dataType: 'JSON'
-        }).done(function(data){
+        }).done(function(data) {
             console.log(data);
+            console.log(data[0].groups[0]._id);
             $('div#content-panel').remove();
             var html = new EJS({
-                url: 'competition/rate.ejs'
+                url: 'competition/activated.ejs'
             }).render({
                 data: data
             });
             $('div.container').append(html);
-            $('.single-slider').jRange({
-                from: 0,
-                to: 20,
-                step: 2,
-                scale: [0,2,4,6,8,10,12,14,16,18,20],
-                format: '%s',
-                width: 400,
-                showLabels: true,
-                snap: true
+            competitionActivator();
+            $('div#groups').hide();
+            //Display groups button for every competition
+            $('button#competitionShowGroups').each(function(){
+                $(this).on('click',function(e){
+                    //slide down groups panel
+                    $(this).closest('tr').next('tr').children('td').children('div').slideToggle();
+                    //Fetch information about group from db
+                });
+            });
+            $('a#groupLink').each(function(){
+                $(this).on('click',function(e){
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
+                    var url = $(this).attr('href');
+                    console.log(url);
+                    $('div#clicked').removeAttr('id');
+                    //check if button was already clicked / if no, then fetch data and mark it as clicked with id attribute
+                        $(this).closest('div').attr('id','clicked');
+                        $.ajax({
+                            url: url,
+                            method: 'GET',
+                            dataType: 'JSON'
+                        }).done(function(data){
+                            //render group panel and append it
+                            var html = new EJS({
+                                url: 'competition/templates/horses.ejs'
+                            }).render({
+                                data: data
+                            });
+                            $('div#clicked').append(html);
+                            $('button.rateButton').on('click',function(){
+                                var id = $(this).attr('id');
+                                if($(this).text() === "Zacznij ocenianie"){
+                                    $(this).text('Zakończ ocenianie');
+                                    $(this).removeClass('btn-success');
+                                    $(this).addClass('btn-danger');
+                                }else{
+                                    $(this).text('Zacznij ocenianie');
+                                    $(this).removeClass('btn-danger');
+                                    $(this).addClass('btn-success');
+                                }
+                                console.log(id); 
+                                $.ajax({
+                                    url: '/horse/rateActivator/'+$(this).attr('id'),
+                                    method: 'GET',
+                                    dataType: 'JSON'
+                                }).done(function(data){
+                                    console.log('HORSE RATE ACTIVATING SUCCESS');
+                                    socket.emit('horseActivated',id);
+                                });
+                            });
+                    });    
+                });
             });
         });
-        
     });
-    
     
     
 }
@@ -559,9 +615,9 @@ var refereeManager = function() {
 /***************************************************************************/
 $(document).ready(function() {
     console.log('document ready');
-    refereeManager();
+    adminManager();
     $('div#content-panel').bind('destroyed', function() {
         console.log('dom changed');
-        refereeManager;
+        adminManager;
     });
 });
