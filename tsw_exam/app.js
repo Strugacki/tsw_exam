@@ -26,8 +26,6 @@ var logger = require('morgan');
 var cookieSession = require('cookie-session');
 var bodyParser = require('body-parser');
 
-
-
 //Routes assign to variables
 var routes = require('./routes/index');
 var users = require('./routes/users');
@@ -74,6 +72,7 @@ app.use(express.static(path.join(__dirname, 'bower_components/ejs')));
 app.use(express.static(path.join(__dirname, 'bower_components/bootstrap/dist/css')));
 app.use(express.static(path.join(__dirname, 'bower_components/bootstrap/dist/js')));
 app.use(express.static(path.join(__dirname, 'bower_components/bootstrap/dist/fonts')));
+app.use(express.static(path.join(__dirname, 'bower_components/rangeslider.js/dist')));
 /***************Passport and Mongo*****************/
 //Connecting to mongoDB and checking if connection is OK
 mongoose.connect('mongodb://localhost/tsw_exam', function(err) {
@@ -121,7 +120,7 @@ app.use('/referee', referee);
 app.use('/horse', horse);
 app.use('/group', group);
 app.use('/competition', competition);
-//app.use('/result', result);
+app.use('/result', result);
 
 /// catch 404 and forwarding to error handler
 app.use(function(req, res, next) {
@@ -209,7 +208,7 @@ io.on('connection', function(socket){
                if(competition === null){
                 io.sockets.emit('removeForm',true);   
                }else{
-                    io.sockets.emit('renderForm',true);
+                io.sockets.emit('renderForm',competition._id);
                }
            } 
         });   

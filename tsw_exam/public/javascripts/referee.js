@@ -36,6 +36,7 @@ var refereeManager = function() {
                 horses: data
             });
             $('div.container').append(html);
+            horseActivated();
         });
     });
     
@@ -46,7 +47,8 @@ var refereeManager = function() {
     });
     
     
-    socket.on('horseActivated',function(data){
+    var horseActivated = function (){
+        socket.on('horseActivated',function(data){
         console.log('JEST!')
         console.log(data._id);
         $('button[id*='+data._id+']').removeAttr('disabled').removeClass('btn-danger').addClass('btn-success');
@@ -55,20 +57,67 @@ var refereeManager = function() {
         }).render({
             horse: data
         });
-        $('button[id*='+data._id+']').parent().append(html);
-        $('div#horseForm').hide();
-        $('button[id*='+data._id+']').on('click',function(){
-            $('div#horseForm').slideToggle();
+        $('div#content-panel').remove();
+        $('div.container').append(html);
+        $('input[type=range]').each(function(){
+            $(this).change(function(){
+               var attr = $(this).attr('id');
+                var value = $(this).val();
+               $('div[id*='+attr+']').text(value);
+            });
         });
         $('form').submit(function(e){
             e.preventDefault();
+            e.stopImmediatePropagation();
+            var url = $(this).attr('action');
+            var data = {};
+            var head = parseInt($('div#head').text());
+            var neck = parseInt($('div#neck').text());
+            var kloda = parseInt($('div#kloda').text());
+            var legs = parseInt($('div#legs').text());
+            var move = parseInt($('div#move').text());
+            var data.horseId = $('button[type=submit]').attr('id');
+            var overall = (neck + head + kloda + legs + move) / 5;
+            data.overall = overall;
+            socket.emit('ratedHorseData',data);
+            $.ajax({
+                url: url,
+                method: 'POST',
+                dataType: 'JSON',
+                data: data
+            }).done(function(data){
+                console.log(data);
+                $('div.panel-heading').remove();
+                $('form').remove();
+                $('div.panel-default').append('<div class="panel panel-heading text-center"><h1>Formularz oceny zawodów</h1></div><div class="panel panel-body"><p class="alert alert-success text-center">'+ data +'</p><div class="horsesList"></div>');
+                horseActivated();
+            });
         });
-        
-    });
+        });
+    }
     
     socket.on('horseDeactivated',function(data){
         console.log('TY MENDO');
-        //setInterval(function(){ alert("Hello"); }, 10000);
+        setTimeout(function(){ alert("Pozostała Ci minuta na uzupełnienie ocen!"); }, 0);
+        setTimeout(function(){ alert("Za 10 sekund nastąpi zamknięcie ocen, wyślij je teraz!"); }, 50000);
+        setTimeout(function(){ 
+            $.ajax({
+                url: '/competition/rate',
+                method: 'GET',
+                dataType: 'JSON'
+            }).done(function(data){
+                console.log(data);
+                $('div#content-panel').remove();
+                var html = new EJS({
+                    url: 'competition/templates/rateHorseList.ejs'
+                }).render({
+                    horses: data
+                });
+                $('div.container').append(html);
+                alert("Ocenianie konia zostało zakończone, proszę czekać na ponowne otwarcie panelu!");
+            });
+        
+        }, 60000);     
     });
     //HORSE RATE VIEW
     $('a#competitionRate').on('click',function(e){
@@ -95,27 +144,6 @@ var refereeManager = function() {
                    $('div.horsesList').append('<div class="row text-center horse"><a class="btn btn-primary" href="/horse/get/'+data[i]._id+'">Koń o numerze: '+ i +'</a><br></div>');
                } 
             });
-            /*socket.on('horseToRate',function(data){
-                console.log(data);
-                console.log('SEND HORSE TO REFEREE SUCCESS!');
-                $('div.panel-body').remove();
-                var html = new EJS({
-                url: 'competition/rateForm.ejs'
-                }).render({
-                    horse: data
-                });
-                $('form').append(html);
-                $('.single-slider').jRange({
-                    from: 0,
-                    to: 20,
-                    step: 2,
-                    scale: [0,2,4,6,8,10,12,14,16,18,20],
-                    format: '%s',
-                    width: 500,
-                    showLabels: true,
-                    snap: true
-                });
-            });//socket*/
         });
         
     });
@@ -128,7 +156,7 @@ $(document).ready(function() {
     console.log('document ready');
     refereeManager();
     $('div#content-panel').bind('destroyed', function() {
-        console.log('dom changed');
+        console.log('dom changed for referee');
         refereeManager;
     });
 });

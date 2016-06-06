@@ -1,49 +1,57 @@
-<div class="row" id="horseForm">
-   <div class="col-lg-10 col-lg-push-1 col-md-10 col-md-push-1 col-sm-10 col-sm-push-1">
+<div id="content-panel" class="col-lg-12 col-md-12 col-sm-12">
     <div class="panel panel-default">
-        <form action="competition/rate/horse/<%= horse._id %>" method="post">
-            <div class="panel panel-body text-center">
+        <div class="panel panel-heading text-center">
+            <h1>Witaj w panelu sędziego!!</h1>
+        </div>
+        <form action="result/rate/horse/<%= horse._id %>" method="post">
+            <div class="panel panel-body">
+                <div class="panel panel-body text-center">
                     <div class="row">
                        <h4 class="text-center" style="color: white">Głowa</h4>
                         <div class="col-lg-6 col-lg-push-3 col-md-8 col-md-push-2 col-sm-12 text-center">
-                            <input id="head" type="hidden" class="single-slider" value="2"/>
+                            <input id="head" class="rangeslider rangeslider-horizontal" type="range" min="0" max="20" step="2" value="0"/>
+                            <div id="head" class="btn btn-info"></div>
                         </div>
                     </div>
                     <hr>
                     <div class="row">
                        <h4 class="text-center" style="color: white">Szyja</h4>
                         <div class="col-lg-6 col-lg-push-3 col-md-8 col-md-push-2 col-sm-12 text-center">
-                            <input id="neck" type="hidden" class="single-slider" value="2"/>
+                            <input id="neck" class="rangeslider rangeslider-horizontal" type="range" min="0" max="20" step="2" value="0"/>
+                            <div id="neck" class="btn btn-info"></div>
                         </div>
                     </div>
                     <hr>
                     <div class="row">
                        <h4 class="text-center" style="color: white">Kłoda</h4>
                         <div class="col-lg-6 col-lg-push-3 col-md-8 col-md-push-2 col-sm-12 text-center">
-                            <input id="kloda" type="hidden" class="single-slider" value="2"/>
+                            <input id="kloda" class="rangeslider rangeslider-horizontal" type="range" min="0" max="20" step="2" value="0"/>
+                            <div id="kloda" class="btn btn-info"></div>
                         </div>
                     </div>
                     <hr>
                     <div class="row">
                        <h4 class="text-center" style="color: white">Nogi</h4>
                         <div class="col-lg-6 col-lg-push-3 col-md-8 col-md-push-2 col-sm-12 text-center">
-                            <input id="legs" type="hidden" class="single-slider" value="2"/>
+                            <input id="legs" class="rangeslider rangeslider-horizontal" type="range" min="0" max="20" step="2" value="0"/>
+                            <div id="legs" class="btn btn-info"></div>
                         </div>
                     </div>
                     <hr>
                     <div class="row">
                        <h4 class="text-center" style="color: white">Ruch</h4>
                         <div class="col-lg-6 col-lg-push-3 col-md-8 col-md-push-2 col-sm-12 text-center">
-                            <input id="move" type="hidden" class="single-slider" value="2"/>
+                            <input id="move" class="rangeslider rangeslider-horizontal" type="range" min="0" max="20" step="2" value="0"/>
+                            <div id="move" class="btn btn-info"></div>
                         </div>
                     </div>
                     <hr>
                     <br>
+                </div>
             </div>
             <div class="panel panel-footer">
                 <button type="submit" id="<%= horse['_id'] %>" >Prześlij oceny</button>
             </div>
         </form>
-    </div>
     </div>
 </div>
