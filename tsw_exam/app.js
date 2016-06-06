@@ -180,10 +180,6 @@ io.on('connection', function(socket){
     });
     socket.on('horseActivated',function(data){
         console.log(data);
-      /*  Horse.findOne({_id:data}).lean().exec(function(err,horse){
-            console.log('horse to rate: ' + horse);
-            io.sockets.emit('horseToRate',horse);
-        });*/
         Horse.find({isVoteActive: true}).lean().exec(function(err,horses){
             console.log(JSON.stringify(horses));
            io.sockets.emit('horsesToRate',horses); 
@@ -212,6 +208,12 @@ io.on('connection', function(socket){
                }
            } 
         });   
+    });
+    
+    socket.on('ratedHorseData',function(data){
+        Result.find({}).populate('competition').populate('horse').lean().exec(function(err,results){
+           io.sockets.emit('liveScore'); 
+        });
     });
 });
 

@@ -38,59 +38,61 @@ var adminManager = function() {
                 data: data
             });
             $('div.container').append(html);
-            $('div#content-panel').bind('destroyed', function() {
-            });
+            refereeEdit();
+            refereeActivator();
         });
     });
 
     /* GET AND POST EDIT REFEREE FORM */
-    $('a#refereeEdit').on('click', function(e) {
-        e.preventDefault();
-        var getUrl = $(this).attr('href');
-        $.ajax({
-            url: getUrl,
-            method: 'GET',
-            dataType: 'JSON',
-        }).done(function(data) {
-            $('div#content-panel').remove();
-            var html = new EJS({
-                url: 'referee/edit.ejs'
-            }).render({
-                referee: data
-            });
-            $('div.container').append(html);
+    var refereeEdit = function(){
+            $('a#refereeEdit').on('click', function(e) {
+            e.preventDefault();
+            var getUrl = $(this).attr('href');
+            $.ajax({
+                url: getUrl,
+                method: 'GET',
+                dataType: 'JSON',
+            }).done(function(data) {
+                $('div#content-panel').remove();
+                var html = new EJS({
+                    url: 'referee/edit.ejs'
+                }).render({
+                    referee: data
+                });
+                $('div.container').append(html);
 
-            /* SUBMITING UPDATING FORM */
-            //works with post method
-            $('form').submit(function(e) {
-                e.preventDefault();
-                var data = {};
-                //prepare data to send with values from inputs
-                data.username = $('input#username').val();
-                data.firstName = $('input#firstName').val();
-                data.lastName = $('input#lastName').val();
-                data.email = $('input#email').val();
-                data.password = $('input#password').val();
-                data.password1 = $('input#password1').val();
-                $.ajax({
-                    url: $(this).attr('action'),
-                    method: 'POST',
-                    dataType: 'JSON',
-                    data: JSON.stringify(data),
-                    contentType: "application/json",
-                }).done(function(data) {
-                    //render list view and append it
-                    $('div#content-panel').remove();
-                    var html = new EJS({
-                        url: 'referee/list.ejs'
-                    }).render({
-                        data: data
+                /* SUBMITING UPDATING FORM */
+                //works with post method
+                $('form').submit(function(e) {
+                    e.preventDefault();
+                    var data = {};
+                    //prepare data to send with values from inputs
+                    data.username = $('input#username').val();
+                    data.firstName = $('input#firstName').val();
+                    data.lastName = $('input#lastName').val();
+                    data.email = $('input#email').val();
+                    data.password = $('input#password').val();
+                    data.password1 = $('input#password1').val();
+                    $.ajax({
+                        url: $(this).attr('action'),
+                        method: 'POST',
+                        dataType: 'JSON',
+                        data: JSON.stringify(data),
+                        contentType: "application/json",
+                    }).done(function(data) {
+                        //render list view and append it
+                        $('div#content-panel').remove();
+                        var html = new EJS({
+                            url: 'referee/list.ejs'
+                        }).render({
+                            data: data
+                        });
+                        $('div.container').append(html);
                     });
-                    $('div.container').append(html);
                 });
             });
         });
-    });
+    }
 
     //GET AND POST ADD REFEREE FORM
     $('a#refereeAdd').each(function() {
@@ -139,26 +141,39 @@ var adminManager = function() {
     });
 
 
-    $('a#refereeActivator').each(function() {
+    var refereeActivator = function(){
+        $('a#refereeActivator').each(function() {
         $(this).on('click', function(e) {
             e.preventDefault();
-            var requestUrl = $(this).attr('href');;
+            e.stopImmediatePropagation();
+            var requestUrl = $(this).attr('href');
+            if($(this).text() === "Aktywuj"){
+                $(this).text('Dezaktywuj');
+                $(this).removeClass('btn-success');
+                $(this).addClass('btn-warning');
+            }else{
+                $(this).text('Aktywuj');
+                $(this).removeClass('btn-warning');
+                $(this).addClass('btn-success');
+            }
             $.ajax({
                 url: requestUrl,
                 method: 'GET',
                 dataType: 'JSON',
             }).done(function(data) {
-                $('div#content-panel').remove();
+                /*$('div#content-panel').remove();
                 var html = new EJS({
                     url: 'referee/list.ejs'
                 }).render({
                     data: data
                 });
-                $('div.container').append(html);
+                $('div.container').append(html);*/
+                console.log('REFEREE ACTIVATION STATUS CHANGED');
             });
 
         });
-    });
+        });
+    }
 
     /******************************HORSE MANAGEMENT*****************************/
     //GET ALL HORSES
@@ -182,11 +197,13 @@ var adminManager = function() {
 
             });
             horseActivator();
+            horseEdit();
         });
     });
 
     /* GET AND POST EDIT HORSE FORM */
-    $('a#horseEdit').on('click', function(e) {
+    var horseEdit = function(){
+        $('a#horseEdit').on('click', function(e) {
         e.preventDefault();
         var getUrl = $(this).attr('href');
         $.ajax({
@@ -229,7 +246,8 @@ var adminManager = function() {
                 });
             });
         });
-    });
+        });
+    }
 
     //GET AND POST ADD HORSE FORM
     $('a#horseAdd').each(function() {
@@ -281,19 +299,23 @@ var adminManager = function() {
         $('a#horseActivator').each(function() {
             $(this).on('click', function(e) {
                 e.preventDefault();
-                var requestUrl = $(this).attr('href');;
+                e.stopImmediatePropagation();
+                var requestUrl = $(this).attr('href');
+                if($(this).text() === "Dopuść"){
+                    $(this).text('Zawieś');
+                    $(this).removeClass('btn-success');
+                    $(this).addClass('btn-warning');
+                }else{
+                    $(this).text('Dopuść');
+                    $(this).removeClass('btn-warning');
+                    $(this).addClass('btn-success');
+                }
                 $.ajax({
                     url: requestUrl,
                     method: 'GET',
                     dataType: 'JSON',
                 }).done(function(data) {
-                    $('div#content-panel').remove();
-                    var html = new EJS({
-                        url: 'horse/list.ejs'
-                    }).render({
-                        data: data
-                    });
-                    $('div.container').append(html);
+                    console.log('HORSE ACTIVATION STATUS CHANGED');
                 });
 
             });
@@ -512,7 +534,7 @@ var adminManager = function() {
     var competitionActivator = function(){
         $('a#competitionActivator').each(function() {
             $(this).on('click', function(e) {
-                e.preventDefault();
+               /* e.preventDefault();
                 var requestUrl = $(this).attr('href');
                 $.ajax({
                     url: requestUrl,
@@ -528,6 +550,25 @@ var adminManager = function() {
                     $('div.container').append(html);
                     socket.emit('startCompetition',true);
                     $('div#groups').hide();
+                });*/
+                e.preventDefault();
+                e.stopImmediatePropagation();
+                var requestUrl = $(this).attr('href');
+                if($(this).text() === "Rozpocznij"){
+                    $(this).text('Zakończ');
+                    $(this).removeClass('btn-success');
+                    $(this).addClass('btn-warning');
+                }else{
+                    $(this).text('Rozpocznij');
+                    $(this).removeClass('btn-warning');
+                    $(this).addClass('btn-success');
+                }
+                $.ajax({
+                    url: requestUrl,
+                    method: 'GET',
+                    dataType: 'JSON',
+                }).done(function(data){
+                    console.log(data);
                 });
 
             });
