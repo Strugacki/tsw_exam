@@ -2,6 +2,7 @@ var express = require('express');
 var passport = require('passport');
 var expressValidator = require('express-validator');
 var Account = require('../models/account');
+var auth = require('passport-local-authenticate');
 var router = express.Router();
 
 //Adding a new Referee(Account) to database
@@ -96,31 +97,34 @@ router.get('/edit/:referee_id',function(req,res){
 
 router.post('/edit/:referee_id',function(req,res){
     console.log('body: ' + JSON.stringify(req.body));
+    var newPassword = req.body.password;
     Account.findOne({role: 'referee', _id:req.params.referee_id},function(err,referee){
-        console.log(referee);
-        console.log(req.body.username);
-        referee.update({
-            username : req.body.username,
-            firstName : req.body.firstName,
-            lastName : req.body.lastName,
-            email : req.body.email,
-            password : req.body.password
-        }, function(error){
-            console.log('dupe');
-            console.log(error);
-            //res.render('referee/edit/',{user: req.user, referee: referee, errors: 'Nie udało się dokonać aktualizacji!'});
-        });
-        if(err){
-            console.log('dupe2');
-            console.log(err);
-            //res.render('referee/edit/',{user: req.user, referee: referee, errors: 'Nie udało się dokonać aktualizacji!'});
-        }else{
-            //res.redirect('/referee/list');
-            Account.find({role: 'referee'}).lean().exec(function(err,referees){
-                res.json(referees);
+        var newPasswordHashed = null ;
+        var newPasswordSalt = null;
+        auth.hash(newPassword,function(err,hashed){
+            console.log(hashed.hash);
+            newPasswordHashed = hashed.hash;
+            newPasswordSalt = hashed.salt;
+            referee.update({
+                username : req.body.username,
+                firstName : req.body.firstName,
+                lastName : req.body.lastName,
+                hash : newPasswordHashed,
+                salt : newPasswordSalt,
+                email : req.body.email,
+                password : newPassword
+            }, function(error){
+                console.log(error);
             });
-        }
-    });
+        });
+    if(err){
+        console.log(err);
+    }else{
+        Account.find({role: 'referee'}).lean().exec(function(err,referees){
+            res.json(referees);
+        });
+    }
+});
 });
 
 

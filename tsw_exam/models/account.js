@@ -17,6 +17,7 @@ var Account = new Schema({
     group: [{ type: Schema.Types.ObjectId, ref: 'Group' }]
 });
 
+
 Account.plugin(passportLocalMongoose);
 Account.plugin(mongooseRole,{
     roles: ['public','referee','admin'],
