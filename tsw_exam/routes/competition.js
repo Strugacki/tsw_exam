@@ -197,7 +197,7 @@ router.get('/activator/:competition_id',function(req,res){
     }
 });
 
-router.route('/rate').get(function(req,res,next){
+router.route('/authReferees').get(function(req,res,next){
     var role = 'public';
     if(req.user){
         if(req.user.hasAccess(['public','referee'])){
@@ -225,6 +225,57 @@ router.route('/rate').get(function(req,res,next){
                     Group.findOne({_id: groupToRateId}).populate('horses').lean().exec(function(err,group){
                         console.log(group.horses);
                         res.json(group.horses);
+                    });
+                }
+                
+            });
+        }else{
+            if(req.user.hasAccess('public','referee')){
+                console.log('REFEREE');
+                role = 'referee';
+            }
+            console.log(role);
+            res.render('index', {user: req.user,userRole: role, msg: 'Nie posiadasz odpowiednich uprawnień!'});
+        }
+    }else{
+        res.render('user/login',{user: req.user, msg: 'Zalogu się na konto administratora!'});
+    }
+});
+
+
+router.route('/checkHorse/:horse_id').get(function(req,res,next){
+    var role = 'public';
+    if(req.user){
+        if(req.user.hasAccess(['public','referee'])){
+            console.log("REFEREE");
+            Competition.findOne({isActive: true}).populate('groups').populate('referees').lean().exec(function(err,competition){
+                console.log('HORSES IN GROUP 1: ' + competition.groups[0].horses);
+                console.log('HORSES IN GROUP 2: ' + competition.groups[1].horses);
+                var hasPermission = false;
+                var groupToRateId = null;
+                var array = [];
+                var value;
+                var userId;
+                for(var i = 0;i<competition.groups.length;i++){
+                    array = competition.groups[i].referees;
+                    for(var j = 0;j<array.length;j++){
+                        var value = String(array[j]);
+                        var userId = String(req.user._id);
+                        if(value === userId){
+                            hasPermission = true;
+                            groupToRateId = String(competition.groups[i]._id);
+                        }
+                    }
+                }
+                if(hasPermission){
+                    Group.findOne({_id: groupToRateId}).populate('horses').lean().exec(function(err,group){
+                        console.log(group.horses);
+                        for(var j=0;j<group.horses.length;j++){
+                            if(group.horses[j]._id == req.params.horse_id){
+                                console.log(group.horses[j]);
+                                res.json(group.horses[j]); 
+                            }
+                        }
                     });
                 }
                 

@@ -24,7 +24,7 @@ var refereeManager = function() {
     
     socket.on('renderForm',function(data){
         $.ajax({
-            url: '/competition/rate',
+            url: '/competition/authReferees',
             method: 'GET',
             dataType: 'JSON'
         }).done(function(data){
@@ -50,8 +50,57 @@ var refereeManager = function() {
     
     var horseActivated = function (){
         socket.on('horseActivated',function(data){
-        console.log(data._id);
-        if($('button[id*='+data._id+']')){
+        console.log('HORSE ID: ' + data);
+        $.ajax({
+            url: '/competition/checkHorse/'+data+'',
+            method: 'GET',
+            dataType: 'JSON'
+        }).done(function(data){
+            var html = new EJS({
+                url: 'competition/templates/rateHorseForm.ejs'
+            }).render({
+                horse: data
+            });
+            $('div#content-panel').remove();
+            $('div.container').append(html);
+            $('input[type=range]').each(function(){
+                $(this).change(function(){
+                   var attr = $(this).attr('id');
+                    var value = $(this).val();
+                   $('div[id*='+attr+']').text(value);
+                });
+            });
+            $('form').submit(function(e){
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
+                    var url = $(this).attr('action');
+                    var data = {};
+                    var head = parseInt($('div#head').text());
+                    var neck = parseInt($('div#neck').text());
+                    var kloda = parseInt($('div#kloda').text());
+                    var legs = parseInt($('div#legs').text());
+                    var move = parseInt($('div#move').text());
+                    data.horseId = $('button[type=submit]').attr('id');
+                    console.log('data.horseId : ' + data.horseId);
+                    var overall = (neck + head + kloda + legs + move) / 5;
+                    data.overall = overall;
+                    //socket.emit('ratedHorseData',data);
+                    $.ajax({
+                        url: url,
+                        method: 'POST',
+                        dataType: 'JSON',
+                        data: data
+                    }).done(function(data){
+                        console.log(data);
+                        $('div.panel-heading').remove();
+                        $('form').remove();
+                        $('div.panel-default').append('<div class="panel panel-heading text-center"><h1>Formularz oceny zawodów</h1></div><div class="panel panel-body"><p class="alert alert-success text-center">'+ data +'</p><div class="horsesList"></div>');
+                        horseActivated();
+                        socket.emit('refreshLiveScore',data);
+                    });
+                });
+        });
+       /* if($('button[id*='+data._id+']')){
             $('button[id*='+data._id+']').removeAttr('disabled').removeClass('btn-danger').addClass('btn-success');
             $('button[id*='+data._id+']').on('click',function(e){
                 e.preventDefault();
@@ -100,7 +149,7 @@ var refereeManager = function() {
                     });
                 });
             })
-        }
+        }*/
         });
     }
     //var horseDeactivated = function(){
@@ -112,7 +161,7 @@ var refereeManager = function() {
             setTimeout(function(){ alert("Za 10 sekund nastąpi zamknięcie ocen, wyślij je teraz!"); }, 50000);
             setTimeout(function(){ 
                 $.ajax({
-                    url: '/competition/rate',
+                    url: '/competition/authReferees',
                     method: 'GET',
                     dataType: 'JSON'
                 }).done(function(data){

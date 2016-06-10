@@ -664,29 +664,6 @@ var adminManager = function() {
                                 data: data
                             });
                             $('div#clicked').append(html);
-                            //
-                          /*  $('button.rateButton').on('click',function(){
-                                var id = $(this).attr('id');
-                                if($(this).text() === "Zacznij ocenianie"){
-                                    $(this).text('Zakończ ocenianie');
-                                    $(this).removeClass('btn-success');
-                                    $(this).addClass('btn-danger');
-                                }else{
-                                    $(this).text('Zacznij ocenianie');
-                                    $(this).removeClass('btn-danger');
-                                    $(this).addClass('btn-success');
-                                }
-                                console.log(id); 
-                                $.ajax({
-                                    url: '/horse/rateActivator/'+$(this).attr('id'),
-                                    method: 'GET',
-                                    dataType: 'JSON'
-                                }).done(function(data){
-                                    console.log('HORSE RATE ACTIVATING SUCCESS');
-                                    socket.emit('horseActivated',id);
-                                });
-                            });*/
-                            //
                             $('button.rateButton').each(function(){
                                $(this).on('click',function(e){
                                    e.preventDefault();

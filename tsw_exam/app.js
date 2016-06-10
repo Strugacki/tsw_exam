@@ -191,7 +191,7 @@ io.on('connection', function(socket){
         Horse.findOne({_id: data}).lean().exec(function(err,horse){
            if(horse.isVoteActive){
                console.log('HORSE ACTIVATED');
-               io.sockets.emit('horseActivated',horse);
+               io.sockets.emit('horseActivated',horse._id);
            }else{
                console.log('HORSE DEACTIVATED');
                io.sockets.emit('horseDeactivated',horse);
