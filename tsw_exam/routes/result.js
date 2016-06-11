@@ -62,9 +62,14 @@ router.post('/update/:id_results',function(req,res){
 
 
 router.get('/show',function(req,res){
+    var data = {}
     Result.find({isReady: true}).populate('competition').populate('horse').lean().exec(function(err,results){
         console.log(JSON.stringify(results));
-        res.json(results);
+        data.results = results;
+        Horse.find({}).lean().exec(function(err,horses){
+            data.horses = horses ;
+            res.json(data);
+        });
     });
 });
 

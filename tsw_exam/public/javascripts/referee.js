@@ -143,7 +143,8 @@ var refereeManager = function() {
             }
             $(this).change(function(e){
                 e.stopImmediatePropagation();
-                if($(this).val() != '0'){
+                if($(this).val() != 0){
+                    $('button[type=submit]').removeAttr('disabled');
                     $(this).prev('div#alert:first').remove();
                 }
             });

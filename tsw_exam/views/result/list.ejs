@@ -2,25 +2,53 @@
 <div id="content-panel" class="col-lg-12 col-md-12 col-sm-12">
     <div class="panel panel-default">
         <div class="panel panel-heading text-center">
-            <h1>Wyniki Zawodów</h1>
+            <h1>Ranking Championów</h1>
         </div>
         <div class="panel panel-body">
-          <table class="table table-hover">
+            <table id="ranking" class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Nazwa konia</th>
+                        <th>Właściciel konia</th>
+                        <th>Podsumowanie punktów</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% for(i=0; i < 5; i++){ %>
+                      <% if(horses[i].summary != 0){ %>
+                      <tr id="horse">
+                        <td id="horseName"><%= horses[i].horseName %></td>
+                        <td id="ownerData"><%= horses[i].ownerFirstName %> <%= horses[i].ownerLastName %></td>
+                        <td id="summary"><%= horses[i].summary %></td>
+                      </tr>
+                      <% } %>
+                     <% } %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <hr>
+    <div class="panel panel-default">
+        <div class="panel panel-heading text-center">
+            <h1>Tabela wyników</h1>
+        </div>
+        <div class="panel panel-body">
+          <table id="results" class="table table-hover">
             <thead>
               <tr>
                 <th>Nazwa zawodów</th>
                 <th>Nazwa konia</th>
                 <th>Właściciel konia</th>
-                <th>Średnia ocena</th>
+                <th>Średnia ocena z zawodów</th>
               </tr>
             </thead>
             <tbody>
-             <% var i = 0; var j = 0; var k = 0; for(i=0; i < data.length; i++){ %>
-              <tr>
-                <td><%= data[i].competition.name %></td>
-                <td><%= data[i].horse.horseName %></td>
-                <td><%= data[i].horse.ownerFirstName %> <%= data[i].horse.ownerLastName %></td>
-                <td><%= data[i].overall %></td>
+             <% var i = 0; var j = 0; var k = 0; for(i=0; i < results.length; i++){ %>
+              <tr id="horse">
+                <td id="competitionName"><%= results[i].competition.name %></td>
+                <td id="horseName"><%= results[i].horse.horseName %></td>
+                <td id="ownerData"><%= results[i].horse.ownerFirstName %> <%= results[i].horse.ownerLastName %></td>
+                <td id="overallPoints"><%= results[i].overall %></td>
               </tr>
              <% } %>
             </tbody>
@@ -28,3 +56,4 @@
         </div>
     </div>
 </div>
+
