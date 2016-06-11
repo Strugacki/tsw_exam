@@ -37,7 +37,10 @@ router.route('/add').get(function(req,res){
     var horsesReq = req.body.horses;
     var refereesInGroupNumber = req.body.refereesInGroupNumber;
     var horsesInGroupNumber = req.body.horsesInGroupNumber;
-    
+    var stallions = req.body.stallions;
+    var mares = req.body.mares;
+    console.log('STALLIONS IN ARRAY: ' + stallions);
+    console.log('MARES IN ARRAY: ' + mares);
     //Function that gets random int value from a range between min and max
     function getRandomIndex(min, max) {
         return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -66,7 +69,6 @@ router.route('/add').get(function(req,res){
                 refereeID = refereesTmp[index];
                 console.log("INDEX:" + index +' ' + refereeID); 
             }
-            var index = getRandomIndex(0,(refereesTmp.length - 1));
             var refereeID = refereesTmp[index];
             console.log("INDEX:" + index +' ' + refereeID);
             refereesTmp.splice(index,1);
@@ -75,7 +77,7 @@ router.route('/add').get(function(req,res){
         }
         /*********************************************/
         //Randomizing horses and assigning to group
-        for(var k = 0; k<horsesInGroupNumber;k++){
+        /*for(var k = 0; k<horsesInGroupNumber;k++){
             console.log('Horses TMP:' + horsesTmp);
             var index1;
             var horseID;
@@ -89,8 +91,67 @@ router.route('/add').get(function(req,res){
             console.log("INDEX1:" + index1 + ' ' + horseID);
             horsesTmp.splice(index1,1);
             horses.push(horseID); 
+        }*/
+        //Randomizing horses for competition. Firstly it randomize stallions and then mares
+        if(stallions.length>=horsesInGroupNumber){
+            for(var k = 0; k<horsesInGroupNumber; k++){
+                console.log('STALLIONS: ' + stallions);
+                var index1;
+                var horseID;
+                if(stallions.length == 1){
+                    index1 = 0;
+                    horseID = stallions[index1]
+                }else{
+                    index1 = getRandomIndex(0,(stallions.length - 1));
+                    horseID = stallions[index1];
+                }
+                console.log("INDEX1:" + index1 + ' ' + horseID);
+                stallions.splice(index1,1);
+                horses.push(horseID);
+            }
+            /*********************************************/
+            //Creating new group
+            var groupToAdd = new Group({
+                referees: referees,
+                horses: horses
+            });
+            console.log(groupToAdd._id);
+            console.log(groupToAdd);
+            console.log(groupToAdd['horses']);
+            //Saving new group
+            //Pushing new group id to array
+            groups.push(groupToAdd);
+        }else if(mares.length>=horsesInGroupNumber){
+            for(var k = 0; k<horsesInGroupNumber; k++){
+                console.log('MARES: ' + mares);
+                var index1;
+                var horseID;
+                if(mares.length == 1){
+                    index1 = 0;
+                    horseID = mares[index1]
+                }else{
+                    index1 = getRandomIndex(0,(mares.length - 1));
+                    horseID = mares[index1];
+                }
+                console.log("INDEX1:" + index1 + ' ' + horseID);
+                mares.splice(index1,1);
+                horses.push(horseID);
+            }
+            /*********************************************/
+            //Creating new group
+            var groupToAdd = new Group({
+                referees: referees,
+                horses: horses
+            });
+            console.log(groupToAdd._id);
+            console.log(groupToAdd);
+            console.log(groupToAdd['horses']);
+            //Saving new group
+            //Pushing new group id to array
+            groups.push(groupToAdd);
         }
-        /*********************************************/
+        
+    /*    /*********************************************
         //Creating new group
         var groupToAdd = new Group({
             referees: referees,
@@ -101,7 +162,7 @@ router.route('/add').get(function(req,res){
         console.log(groupToAdd['horses']);
         //Saving new group
         //Pushing new group id to array
-        groups.push(groupToAdd);
+        groups.push(groupToAdd);*/
     }
     
     async.each(groups,function(group,callback){

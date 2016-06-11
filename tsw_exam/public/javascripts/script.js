@@ -31,28 +31,55 @@ var adminManager = function() {
                 method: 'GET',
                 dataType: 'JSON'
             }).done(function(data){
-                console.log(data);
+                var horses = data.horses;
+                var results = data.results;
+                //Creating summary of points for every horse
+                for(var i = 0; i < horses.length; i++){
+                    horses[i].overalls = [];
+                    horses[i].summary = 0;
+                    for(var j=0;j<results.length;j++){
+                        if(horses[i]._id == results[j].horse._id){
+                            horses[i].overalls.push(results[j].overall);
+                            console.log('HORSES OVERALLS: ' + horses[i].overalls);
+                        }
+                    }
+                    console.log(horses[i].overalls);
+                    horses[i].summary = horses[i].overalls.reduce(function(prev,curr){
+                        return prev + curr;
+                    },0);
+                    console.log('Horse summary: ' + horses[i].summary);
+                }
+                //Bubble sorting array with horses and their summary points
+                do{
+                    var zamiana = false;
+                    for( i = 0; i < horses.length -1 ; i++){
+                        var horse1 = horses[i];
+                        var horse2 = horses[i+1];
+                        if(parseInt(horse1.summary) < parseInt(horse2.summary)){
+                            var horseTmp = horse1;
+                            horses[i] = horse2;
+                            horses[i+1] = horseTmp;
+                            zamiana = true;
+                        }
+                    }
+                }while(zamiana);
+                
                 $('div#content-panel').remove();
                 var html = new EJS({
                     url: 'result/list.ejs'
                 }).render({
-                    data: data
+                    results: data.results,
+                    horses: horses
                 });
                 $('div.container').append(html);
-                socket.on('refreshScore',function(data){
-                    $('div#content-panel').remove();
-                    var html = new EJS({
-                        url: 'result/list.ejs'
-                    }).render({
-                        data: data
-                    });
-                    $('div.container').append(html);    
-                });
             })
         });
     }
     
     showList();
+    socket.on('refreshScore',function(data){
+       showList(); 
+    });
     
     /************************************************************/
     //GET ALL REFEREES
@@ -410,7 +437,11 @@ var adminManager = function() {
                 var horsesList = '';
                 for (var i = 0; i < data.length; i++) {
                     if (data[i].isActive) {
-                        horsesList += '<option value="' + data[i]._id + '">' + data[i].horseName + "</option>";
+                        if(data[i].sex == 'stallion'){
+                            horsesList += '<option value="' + data[i]._id + '" data-sex="stallion">' + data[i].horseName + "</option>";    
+                        }else{
+                            horsesList += '<option value="' + data[i]._id + '" data-sex="mare">' + data[i].horseName + "</option>";   
+                        }
                     }
                 }
                 $('select#horsesList').append(horsesList);
@@ -430,6 +461,8 @@ var adminManager = function() {
                     competitionData['referees'] = [];
                     var refereesForGrouping = [];
                     var horsesForGrouping = [];
+                    var maresForGroup = [];
+                    var stallionsForGroup = [];
                     //
                     //Collect info about horses that were selected and psuh them to competitionData.horses array
                     $('select#horsesList > option:selected').each(function() {
@@ -437,8 +470,15 @@ var adminManager = function() {
                             horseName: $(this).text(),
                             id: $(this).val()
                         };
+                        if($(this).attr('data-sex') == 'stallion'){
+                            console.log('STALLION ADDED');
+                            stallionsForGroup.push($(this).val());
+                        }else{
+                            console.log('MARES ADDED');
+                            maresForGroup.push($(this).val());
+                        }
                         competitionData['horses'].push($(this).val());
-                        horsesForGrouping.push(horse);
+                        horsesForGrouping.push(horse.id);
                     });
                     //
                     //Collect info about referees that were selected and push them to competitionData.referees array
@@ -498,6 +538,8 @@ var adminManager = function() {
                         data.groupsNumber = groupsNumber;
                         data.horsesInGroupNumber = horsesInGroupNumber;
                         data.refereesInGroupNumber = refereesInGroupNumber;
+                        data.stallions = stallionsForGroup;
+                        data.mares = maresForGroup;
                         $.ajax({
                             url: '/competition/add',
                             method: 'POST',
