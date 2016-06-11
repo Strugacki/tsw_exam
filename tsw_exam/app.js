@@ -216,7 +216,7 @@ io.on('connection', function(socket){
     
     //GETS DATA FROM REFEREE WITH HORSE RATES AND SEND TO GUEST LIVE SCORE TABLE
     socket.on('refreshLiveScore',function(data){
-        Result.find({}).populate('competition').populate('horse').lean().exec(function(err,results){
+        Result.find({isReady: true}).populate('competition').populate('horse').lean().exec(function(err,results){
            io.sockets.emit('refreshScore',results); 
         });
     });

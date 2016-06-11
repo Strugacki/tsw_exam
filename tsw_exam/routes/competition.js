@@ -249,6 +249,8 @@ router.route('/checkHorse/:horse_id').get(function(req,res,next){
         if(req.user.hasAccess(['public','referee'])){
             console.log("REFEREE");
             Competition.findOne({isActive: true}).populate('groups').populate('referees').lean().exec(function(err,competition){
+                console.log('****************************************************');
+                console.log('CHECKING HORSE');
                 console.log('HORSES IN GROUP 1: ' + competition.groups[0].horses);
                 console.log('HORSES IN GROUP 2: ' + competition.groups[1].horses);
                 var hasPermission = false;
@@ -256,6 +258,7 @@ router.route('/checkHorse/:horse_id').get(function(req,res,next){
                 var array = [];
                 var value;
                 var userId;
+                var competitionId = competition._id;
                 for(var i = 0;i<competition.groups.length;i++){
                     array = competition.groups[i].referees;
                     for(var j = 0;j<array.length;j++){
@@ -270,10 +273,31 @@ router.route('/checkHorse/:horse_id').get(function(req,res,next){
                 if(hasPermission){
                     Group.findOne({_id: groupToRateId}).populate('horses').lean().exec(function(err,group){
                         console.log(group.horses);
+                        console.log('COMPETITION ID: ' + competitionId);
                         for(var j=0;j<group.horses.length;j++){
                             if(group.horses[j]._id == req.params.horse_id){
                                 console.log(group.horses[j]);
-                                res.json(group.horses[j]); 
+                                var result = new Result({
+                                    referee: req.user._id,
+                                    horse: group.horses[j]._id,
+                                    isReady: false,
+                                    competition: competitionId
+                                });
+                                var response = {};
+                                response.horse = group.horses[j];
+                                response.result_id = result._id;
+                                response.horseNumber = j;
+                                result.save(function(err){
+                                    if(err){
+                                        console.log(err);
+                                    }else{
+                                        console.log('HORSE:' + response.horse);
+                                        console.log('RESULT_ID' + response.result_id);
+                                        
+                                        res.json(response); 
+                                    }
+                                })
+                                
                             }
                         }
                     });
