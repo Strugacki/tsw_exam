@@ -152,7 +152,7 @@ var adminManager = function() {
     showList();
     socket.on('refreshScore',function(data){
        $.ajax({
-			url: $(this).attr('href'),
+			url: '/result/show',
 			method: 'GET',
 			dataType: 'JSON'
 		}).done(function(data){
@@ -237,6 +237,25 @@ var adminManager = function() {
 				competitions: competitions
 			});
 			$('div.container').append(html);
+		   $('table.dataTable').each(function(){
+					$(this).DataTable( {
+						"language":{
+							search:         "Szukaj:",
+							paginate: {
+								first:      "Pierwsza",
+								previous:   "Poprzednia",
+								next:       "Następna",
+								last:       "Ostatnia"
+							}
+						},
+						"bPaginate": true,
+						"bLengthChange": false,
+						"bFilter": true,
+						"bInfo": false,
+						"bAutoWidth": false,
+						
+					} );
+				});
 			searchLogic();
 		})
     });
