@@ -14,7 +14,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <% for(i=0; i < 5; i++){ %>
+                    <% for( var i=0; i < 5; i++){ %>
                       <% if(horses[i].summary != 0){ %>
                       <tr id="horse">
                         <td id="horseName"><%= horses[i].horseName %></td>
@@ -35,9 +35,9 @@
         </div>
         <div class="panel panel-body">
             <% for( var j=0; j< competitions.length; j++){ %>
-               <% if(competitions[j].results.length){ %>
+               <% if(competitions[j].horsess.length){ %>
                    <h1 style="text-decoration: underline; color: white;" class="text-center"> <%= competitions[j].name %></h1>
-                    <table id="<%= competitions[j].name.replace(/\s/g, '').toLowerCase() %>" class="table table-hover">
+                    <table id="<%= competitions[j].name.replace(/\s/g, '').toLowerCase() %>" class="table dataTable table-hover">
                         <thead>
                           <tr>
                             <th>Nazwa konia</th>
@@ -46,11 +46,11 @@
                           </tr>
                         </thead>
                         <tbody>
-                            <% for( var l=0;l< competitions[j].results.length; l++){ %>
+                            <% for( var l=0;l< competitions[j].horsess.length; l++){ %>
                                 <tr>
-                                    <td><%= competitions[j].results[l].horse.horseName %></td>
-                                    <td><%= competitions[j].results[l].horse.ownerFirstName %> <%= competitions[j].results[l].horse.ownerLastName %></td>
-                                    <td><%= competitions[j].results[l].overall %></td>
+                                    <td><%= competitions[j].horsess[l].name %></td>
+                                    <td><%= competitions[j].horsess[l].firstName %> <%= competitions[j].horsess[l].lastName %></td>
+                                    <td><%= competitions[j].horsess[l].summary %></td>
                                 </tr>
                             <% } %>
                         </tbody>
