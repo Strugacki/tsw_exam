@@ -183,7 +183,7 @@ router.route('/add').get(function(req,res){
         isActive: false,
         groups: groups
     });
-    
+    //Saving new competition
     competitionToAdd.save(function(err){
         if(err){
             console.log(err);
@@ -192,6 +192,7 @@ router.route('/add').get(function(req,res){
         }
     });
     
+	//Get all competitions from db and send in response as json
     Competition.find({}).lean().exec(function(err,competitions){
         console.log(competitions);
        res.json(competitions); 
@@ -199,7 +200,7 @@ router.route('/add').get(function(req,res){
 
 });
 
-
+//Get all competitions
 router.get('/list',function(req,res){
      var role = 'public';
     if(req.user){
@@ -258,6 +259,7 @@ router.get('/activator/:competition_id',function(req,res){
     }
 });
 
+//Check if referee can take a part in active competition
 router.route('/authReferees').get(function(req,res,next){
     var role = 'public';
     if(req.user){
@@ -282,6 +284,7 @@ router.route('/authReferees').get(function(req,res,next){
                         }
                     }
                 }
+				//If he has permission then render view
                 if(hasPermission){
                     Group.findOne({_id: groupToRateId}).populate('horses').lean().exec(function(err,group){
                         console.log(group.horses);
@@ -303,7 +306,7 @@ router.route('/authReferees').get(function(req,res,next){
     }
 });
 
-
+//Check if referee can rate active horse
 router.route('/checkHorse/:horse_id').get(function(req,res,next){
     var role = 'public';
     if(req.user){

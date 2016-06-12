@@ -1,3 +1,4 @@
+/*jshint node: true */
 var express = require('express');
 
 var mongoose = require('mongoose');
@@ -15,5 +16,4 @@ var Horse = new Schema({
     group: [{type: Schema.Types.ObjectId, ref: 'Group'}]
 });
 
-//Horse.plugin(passportLocalMongoose);
 module.exports = mongoose.model('Horse', Horse);

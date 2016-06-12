@@ -26,5 +26,5 @@ Account.plugin(mongooseRole,{
         'admin':['admin'],
         'referee':['referee','admin']
     }
-})
+});
 module.exports = mongoose.model('Account', Account);

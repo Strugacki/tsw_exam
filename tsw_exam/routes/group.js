@@ -6,6 +6,7 @@ var Horse = require('../models/horse');
 var Group = require('../models/group');
 var router = express.Router();
 
+//Get group with id from request
 router.get('/show/:group_id',function(req,res){
     var role = 'public';
     if(req.user){

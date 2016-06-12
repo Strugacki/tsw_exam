@@ -1,8 +1,8 @@
-/******************************REFEREE MANAGEMENT***************************/
-//GET ALL REFEREES
 
+/******************************REFEREE MANAGER***************************/
 var refereeManager = function() {
     
+    //Setting up socket connection
     var URL_SERVER = "https://localhost:3000";
     var socket = io.connect(URL_SERVER);
 
@@ -10,6 +10,7 @@ var refereeManager = function() {
         console.log(data); 
     });
 
+    //implementation of destroy DOM element event
     $.event.special.destroyed = {
         remove: function(o) {
             if (o.handler) {
@@ -17,6 +18,9 @@ var refereeManager = function() {
             }
         }
     }
+    
+    //hide the search box
+    $('#search').hide();
     
     $('div.panel-heading').remove();
     $('div.panel-default').append('<div class="panel panel-heading text-center"><h1>Formularz oceny zawodów</h1></div><div class="panel panel-body"><p class="alert alert-danger text-center">Obecnie żaden koń nie podlega ocenie, proszę czekać!!</p><div class="horsesList"></div>');

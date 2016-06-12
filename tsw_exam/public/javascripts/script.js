@@ -1,8 +1,9 @@
-/******************************REFEREE MANAGEMENT***************************/
-//GET ALL REFEREES
+/*jshint node: true */
 
+/******************************ADMIN MANAGER***************************/
 var adminManager = function() {
     
+    //Setting up socket connection
     var URL_SERVER = "https://localhost:3000";
     var socket = io.connect(URL_SERVER);
 
@@ -10,18 +11,33 @@ var adminManager = function() {
         console.log(data); 
     });
 
-    socket.on('test',function(data){
-                    console.log('hej' + data);
-    });
 
+    //implementation of destroy DOM element event
     $.event.special.destroyed = {
         remove: function(o) {
             if (o.handler) {
-                o.handler()
+                o.handler();
             }
         }
     }
     
+    $('#search').hide();
+    
+    /*******************************************/
+    //Logic for search button
+    var searchLogic = function(){
+        $('#search').fadeIn();
+        $('input[type=search]').keyup(function(){
+            var valueToSearch = $(this).val();
+            valueToSearch = '#' + valueToSearch.replace(/\s/g, '').toLowerCase();
+            console.log(valueToSearch);
+            $('a#searchButton').attr('href',valueToSearch);
+        });
+        
+    }
+    
+    /*******************************************/
+    //SHOW LIST OF COMPETITIONS AND RESULTS ALSO RENDERS RANKING FOR THE BEST HORSES
     var showList = function(){
         $('a#resultList').on('click',function(e){
             e.preventDefault();
@@ -33,6 +49,8 @@ var adminManager = function() {
             }).done(function(data){
                 var horses = data.horses;
                 var results = data.results;
+                var competitions = data.competitions;
+                /*******************************************/
                 //Creating summary of points for every horse
                 for(var i = 0; i < horses.length; i++){
                     horses[i].overalls = [];
@@ -49,6 +67,7 @@ var adminManager = function() {
                     },0);
                     console.log('Horse summary: ' + horses[i].summary);
                 }
+                /*******************************************/
                 //Bubble sorting array with horses and their summary points
                 do{
                     var zamiana = false;
@@ -63,23 +82,36 @@ var adminManager = function() {
                         }
                     }
                 }while(zamiana);
-                
+                /*******************************************/
+                for(i = 0 ; i < competitions.length; i++){
+                    competitions[i].results = [];
+                    for(j = 0 ; j < results.length; j++){
+                        if(competitions[i]._id == results[j].competition._id){
+                            competitions[i].results.push(results[j]);
+                        }
+                    }
+                    console.log(competitions[i].results);
+                }
                 $('div#content-panel').remove();
                 var html = new EJS({
                     url: 'result/list.ejs'
                 }).render({
                     results: data.results,
-                    horses: horses
+                    horses: horses,
+                    competitions: competitions
                 });
                 $('div.container').append(html);
+                searchLogic();
             })
         });
     }
     
+    //
     showList();
     socket.on('refreshScore',function(data){
        showList(); 
     });
+    //
     
     /************************************************************/
     //GET ALL REFEREES
@@ -228,13 +260,6 @@ var adminManager = function() {
                 method: 'GET',
                 dataType: 'JSON',
             }).done(function(data) {
-                /*$('div#content-panel').remove();
-                var html = new EJS({
-                    url: 'referee/list.ejs'
-                }).render({
-                    data: data
-                });
-                $('div.container').append(html);*/
                 console.log('REFEREE ACTIVATION STATUS CHANGED');
             });
 
@@ -528,6 +553,7 @@ var adminManager = function() {
                     });
                     //
                     //
+                    //Logic for submit form
                     $('button[type=submit]').on('click', function(e) {
                         e.preventDefault();
                         var data = {};

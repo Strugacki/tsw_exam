@@ -1,3 +1,4 @@
+/*jshint node: true */
 var express = require('express');
 var passport = require('passport');
 var expressValidator = require('express-validator');
@@ -9,6 +10,7 @@ router.get('/', function(req, res) {
   res.send('respond with a resource');
 });
 
+//Secret account creating route for admin
 router.route('/registration').get(function(req,res,next){
    res.render('user/registration',{errors: null}); 
 }).post(function(req,res,next){
@@ -25,20 +27,19 @@ router.route('/registration').get(function(req,res,next){
            return res.render('/user/registration',{account: account, errors: validationErrors});
        }
        console.log('user registered!');
-       //req.login(account, function(err){
-       //    res.redirect('/');
            passport.authenticate('local')(req, res, function () {
                 res.redirect('/');
-       })
+       });
    });
-  // }
    
 });
 
+//Login route
 router.get('/login',function(req,res){
    res.render('user/login', {user: req.user, msg: null}); 
 });
 
+//Post handler for login action
 router.post('/login', passport.authenticate('local'), function(req, res){
     console.log(req.user.username);
     if(!req.user.isActive){
@@ -49,6 +50,7 @@ router.post('/login', passport.authenticate('local'), function(req, res){
     }
 });
 
+//Logout handler
 router.all('/logout', function(req, res){
     req.logout();
     res.redirect('/');

@@ -28,32 +28,39 @@
         </div>
     </div>
     <hr>
-    <div class="panel panel-default">
+    
+    <div class="panel panel-default" style="margin-bottom: 250px">
         <div class="panel panel-heading text-center">
-            <h1>Tabela wyników</h1>
+            <h1>Rankingi zawodów</h1>
         </div>
         <div class="panel panel-body">
-          <table id="results" class="table table-hover">
-            <thead>
-              <tr>
-                <th>Nazwa zawodów</th>
-                <th>Nazwa konia</th>
-                <th>Właściciel konia</th>
-                <th>Średnia ocena z zawodów</th>
-              </tr>
-            </thead>
-            <tbody>
-             <% var i = 0; var j = 0; var k = 0; for(i=0; i < results.length; i++){ %>
-              <tr id="horse">
-                <td id="competitionName"><%= results[i].competition.name %></td>
-                <td id="horseName"><%= results[i].horse.horseName %></td>
-                <td id="ownerData"><%= results[i].horse.ownerFirstName %> <%= results[i].horse.ownerLastName %></td>
-                <td id="overallPoints"><%= results[i].overall %></td>
-              </tr>
-             <% } %>
-            </tbody>
-          </table>
+            <% for( var j=0; j< competitions.length; j++){ %>
+               <% if(competitions[j].results.length){ %>
+                   <h1 style="text-decoration: underline; color: white;" class="text-center"> <%= competitions[j].name %></h1>
+                    <table id="<%= competitions[j].name.replace(/\s/g, '').toLowerCase() %>" class="table table-hover">
+                        <thead>
+                          <tr>
+                            <th>Nazwa konia</th>
+                            <th>Właściciel konia</th>
+                            <th>Średnia ocena z zawodów</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                            <% for( var l=0;l< competitions[j].results.length; l++){ %>
+                                <tr>
+                                    <td><%= competitions[j].results[l].horse.horseName %></td>
+                                    <td><%= competitions[j].results[l].horse.ownerFirstName %> <%= competitions[j].results[l].horse.ownerLastName %></td>
+                                    <td><%= competitions[j].results[l].overall %></td>
+                                </tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                    <br>
+                    <hr>
+               <% } %>
+            <% } %>
         </div>
     </div>
+    
 </div>
 

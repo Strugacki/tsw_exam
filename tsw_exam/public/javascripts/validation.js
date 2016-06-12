@@ -1,3 +1,5 @@
+/*jshint node: true */
+
 var validator = function(){
     $('input#birthDate').keyup(function(){
         var date = $(this).val();
@@ -35,7 +37,7 @@ var validator = function(){
             $('button[type="submit"]').attr('disabled','disabled');
         }
         
-    })
+    });
 }
 
 

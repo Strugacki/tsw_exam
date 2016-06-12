@@ -115,7 +115,7 @@ router.get('/edit/:horse_id', function(req, res) {
         });
     }
 });
-
+//Post handler for editing horse
 router.post('/edit/:horse_id', function(req, res) {
     Horse.findOne({
         _id: req.params.horse_id
@@ -150,60 +150,13 @@ router.post('/edit/:horse_id', function(req, res) {
     });
 });
 
-router.get('/get/:horse_id',function(req,res){
-    var role = 'public';
-    if(req.user){
-        if(req.user.hasAccess(['public','referee'])){
-            console.log("REFEREE");
-            Competition.findOne({isActive: true}).populate('groups').populate('horses').populate('referees').lean().exec(function(err,competition){
-                console.log(competition.referees);
-                console.log(competition.horses);
-                var hasPermission = false;
-                var groupToRateId = null;
-                var array = [];
-                var value;
-                var userId;
-              /*  for(var i = 0;i<competition.groups.length;i++){
-                    array = competition.groups[i].referees;
-                    for(var j = 0;j<array.length;j++){
-                        var value = String(array[j]);
-                        var userId = String(req.user._id);
-                        if(value === userId){
-                            hasPermission = true;
-                            groupToRateId = String(competition.groups[i]._id);
-                            console.log(hasPermission);
-                            console.log(groupToRateId);
-                        }
-                    }
-                }
-                if(hasPermission){
-                    Group.findOne({_id: groupToRateId}).populate('horses').lean().exec(function(err,group){
-                        console.log(group.horses);
-                        res.json(group);
-                    });
-                }*/
-                
-            });
-        }else{
-            if(req.user.hasAccess('public','referee')){
-                console.log('REFEREE');
-                role = 'referee';
-            }
-            console.log(role);
-            res.render('index', {user: req.user,userRole: role, msg: 'Nie posiadasz odpowiednich uprawnień!'});
-        }
-    }else{
-        res.render('user/login',{user: req.user, msg: 'Zalogu się na konto administratora!'});
-    }
-});
 
-//Activate Referee's Account
+//Activate horse
 router.get('/activator/:horse_id', function(req, res) {
     var role = 'public';
     if (req.user) {
         if (req.user.hasAccess(['admin', 'public', 'referee'])) {
             console.log("ADMIN");
-            console.log("DEACTIVATING HORSE");
             var value = false;
             Horse.findOne({
                 _id: req.params.horse_id
@@ -246,6 +199,7 @@ router.get('/activator/:horse_id', function(req, res) {
     }
 });
 
+//Activate horse for rate
 router.get('/rateActivator/:horse_id', function(req, res) {
     var role = 'public';
     if (req.user) {

@@ -163,12 +163,16 @@ app.use(function(err, req, res, next) {
 io.on('connection', function(socket){
     console.log('User connected to server');
     socket.emit('message','new connection');
+	
+	//GET ALL HORSES SOCKET
     socket.on('reqH',function(data){
         console.log('jest');
         Horse.find({},function(err,horses){
            socket.emit('horses',JSON.stringify(horses)); 
         });
     });
+	
+	//GET ALL REFEREES SOCKET
     socket.on('reqR',function(data){
         Account.find({role:'referee'},function(err,referees){
             socket.emit('referees',JSON.stringify(referees));
@@ -176,9 +180,13 @@ io.on('connection', function(socket){
         });
     });
     
+	//DISCONNECT HANDLER SOCKET
     socket.on('disconnect',function(){
        console.log('User disconnected from the server'); 
     });
+	
+	//HORSE ACTIVATED SOCKET HANDLER
+	//OUTDATE
     socket.on('horseActivated',function(data){
         console.log(data);
         Horse.find({isVoteActive: true}).lean().exec(function(err,horses){
@@ -187,6 +195,7 @@ io.on('connection', function(socket){
         });
     });
     
+	//HORSE ACTIVATED SOCKET HANDLER
     socket.on('horseActivated',function(data){
         Horse.findOne({_id: data}).lean().exec(function(err,horse){
            if(horse.isVoteActive){

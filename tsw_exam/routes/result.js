@@ -6,7 +6,7 @@ var Competition = require('../models/competition');
 var Result = require('../models/result');
 var router = express.Router();
 
-
+//Final update for result
 router.post('/rate/horse/:id_horse',function(req,res){
     var role = 'public';
     if(req.user){
@@ -35,6 +35,7 @@ router.post('/rate/horse/:id_horse',function(req,res){
     }
 });
 
+//Single update handler for moving slider
 router.post('/update/:id_results',function(req,res){
     console.log('jset');
     var role = 'public';
@@ -60,7 +61,7 @@ router.post('/update/:id_results',function(req,res){
     }
 });
 
-
+//Get data for creating results and champions table
 router.get('/show',function(req,res){
     var data = {}
     Result.find({isReady: true}).populate('competition').populate('horse').lean().exec(function(err,results){
@@ -68,7 +69,10 @@ router.get('/show',function(req,res){
         data.results = results;
         Horse.find({}).lean().exec(function(err,horses){
             data.horses = horses ;
-            res.json(data);
+            Competition.find({}).lean().exec(function(err,competitions){
+               data.competitions = competitions;
+                res.json(data);
+            });
         });
     });
 });
