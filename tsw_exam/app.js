@@ -1,3 +1,5 @@
+/*jshint node: true */
+/* global $ */
 //SSL https
 var fs = require('fs');
 var https = require('https');
@@ -5,7 +7,7 @@ var https = require('https');
 var options = {
     key: fs.readFileSync('./file.pem'),
     cert: fs.readFileSync('./file.crt')
-}
+};
 
 var serverPort = 3000;
 
@@ -99,9 +101,7 @@ passport.deserializeUser(Account.deserializeUser());
 //express validation for our model
 app.use(expressValidator({
   errorFormatter: function(param, msg, value) {
-      var namespace = param.split('.')
-      , root    = namespace.shift()
-      , formParam = root;
+      var namespace = param.split('.'), root = namespace.shift(), formParam = root;
 
     while(namespace.length) {
       formParam += '[' + namespace.shift() + ']';
