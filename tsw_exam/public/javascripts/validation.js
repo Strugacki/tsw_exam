@@ -1,4 +1,5 @@
 /*jshint node: true */
+/* global $ */
 
 var validator = function(){
     $('input#birthDate').keyup(function(){
@@ -38,11 +39,11 @@ var validator = function(){
         }
         
     });
-}
+};
 
 
 
-$(document).ready(validator);
+$(function(){validator();});
 $(document).bind('DOMSubtreeModified',function(){
     validator();
-})
+});

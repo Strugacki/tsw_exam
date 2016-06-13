@@ -1,11 +1,12 @@
 /*jshint node: true */
+/* global $ */
 
 /******************************REFEREE MANAGEMENT***************************/
 //GET ALL REFEREES
 
 var quest = function() {
     
-    var URL_SERVER = "https://localhost:3000";
+    var URL_SERVER = "https://10.10.4.184:3000";
     var socket = io.connect(URL_SERVER);
 
     socket.on("message",function(data){
@@ -18,7 +19,7 @@ var quest = function() {
                 o.handler();
             }
         }
-    }
+    };
     
 	
 	socket.on('refreshScore',function(data){
@@ -28,15 +29,16 @@ var quest = function() {
 			method: 'GET',
 			dataType: 'JSON'
 		}).done(function(data){
+           var i,j;
 			var horses = data.horses;
 			var results = data.results;
 			var competitions = data.competitions;
 			/*******************************************/
 			//Creating summary of points for every horse
-			for(var i = 0; i < horses.length; i++){
+			for( i = 0; i < horses.length; i++){
 				horses[i].overalls = [];
-				horses[i].summary;
-				for(var j=0;j<results.length;j++){
+				horses[i].summary = 0;
+				for( j=0;j<results.length;j++){
 					if(horses[i]._id == results[j].horse._id){
 						horses[i].overalls.push(results[j].overall);
 						console.log('HORSES OVERALLS: ' + horses[i].overalls);
@@ -49,8 +51,9 @@ var quest = function() {
 			}
 			/*******************************************/
 			//Bubble sorting array with horses and their summary points
+           var zamiana = false;
 			do{
-				var zamiana = false;
+				zamiana = false;
 				for( i = 0; i < horses.length -1 ; i++){
 					var horse1 = horses[i];
 					var horse2 = horses[i+1];
@@ -73,7 +76,7 @@ var quest = function() {
 				}
 			}*/
 			/*******************************************/
-			for(i = 0 ; i < competitions.length; i++){
+			for( i = 0 ; i < competitions.length; i++){
 				console.log(competitions[i].name);
 				competitions[i].horsess = [];
 				for(var l = 0; l < horses.length; l++){
@@ -81,8 +84,8 @@ var quest = function() {
 					var competitionHorse = {};
 					competitionHorse.overallPoints = [];
 					competitionHorse.summary = 0;
-					competitionHorse.name;
-					for(j=0;j<results.length;j++){
+					competitionHorse.name = null;
+					for( j=0;j<results.length;j++){
 						if(horses[l]._id == results[j].horse._id && results[j].competition._id == competitions[i]._id){
 							exists = true;
 							competitionHorse.name = horses[l].horseName;
@@ -128,7 +131,7 @@ var quest = function() {
 				} );
 			});
 			searchLogic();
-		})
+		});
     });
 	
 	
@@ -145,7 +148,7 @@ var quest = function() {
             $('a#searchButton').attr('href',valueToSearch);
         });
         
-    }
+    };
     
     /*******************************************/
     //SHOW LIST OF COMPETITIONS AND RESULTS ALSO RENDERS RANKING FOR THE BEST HORSES
@@ -158,15 +161,16 @@ var quest = function() {
                 method: 'GET',
                 dataType: 'JSON'
             }).done(function(data){
+                var i,j;
                 var horses = data.horses;
                 var results = data.results;
                 var competitions = data.competitions;
                 /*******************************************/
                 //Creating summary of points for every horse
-                for(var i = 0; i < horses.length; i++){
+                for( i = 0; i < horses.length; i++){
                     horses[i].overalls = [];
-                    horses[i].summary;
-                    for(var j=0;j<results.length;j++){
+                    horses[i].summary = 0;
+                    for( j=0;j<results.length;j++){
                         if(horses[i]._id == results[j].horse._id){
                             horses[i].overalls.push(results[j].overall);
                         }
@@ -177,8 +181,9 @@ var quest = function() {
                 }
                 /*******************************************/
                 //Bubble sorting array with horses and their summary points
+                var zamiana = false;
                 do{
-                    var zamiana = false;
+                    zamiana = false;
                     for( i = 0; i < horses.length -1 ; i++){
                         var horse1 = horses[i];
                         var horse2 = horses[i+1];
@@ -209,7 +214,7 @@ var quest = function() {
 						var competitionHorse = {};
 						competitionHorse.overallPoints = [];
 						competitionHorse.summary = 0;
-						competitionHorse.name;
+						competitionHorse.name = null;
 						for(j=0;j<results.length;j++){
 							if(horses[l]._id == results[j].horse._id && results[j].competition._id == competitions[i]._id){
 								exists = true;
@@ -256,19 +261,18 @@ var quest = function() {
 					} );
 				});
                 searchLogic();
-            })
+            });
         });
-    }
+    };
     
     showList();
-}
+};
 
 /***************************************************************************/
-$(document).ready(function() {
+$(function() {
     console.log('document ready');
     quest();
     $('div#content-panel').bind('destroyed', function() {
         console.log('dom changed for guest');
-        quest;
     });
 });

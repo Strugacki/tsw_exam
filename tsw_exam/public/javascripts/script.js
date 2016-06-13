@@ -1,10 +1,11 @@
 /*jshint node: true */
+/* global $ */
 
 /******************************ADMIN MANAGER***************************/
 var adminManager = function() {
     
     //Setting up socket connection
-    var URL_SERVER = "https://localhost:3000";
+    var URL_SERVER = "https://10.10.4.184:3000";
     var socket = io.connect(URL_SERVER);
 
     socket.on("message",function(data){
@@ -19,7 +20,7 @@ var adminManager = function() {
                 o.handler();
             }
         }
-    }
+    };
     
     $('#search').hide();
     
@@ -34,7 +35,7 @@ var adminManager = function() {
             $('a#searchButton').attr('href',valueToSearch);
         });
         
-    }
+    };
     
 	/*******************************************/
     //SHOW LIST OF COMPETITIONS AND RESULTS ALSO RENDERS RANKING FOR THE BEST HORSES
@@ -54,7 +55,7 @@ var adminManager = function() {
                 //Creating summary of points for every horse
                 for(var i = 0; i < horses.length; i++){
                     horses[i].overalls = [];
-                    horses[i].summary;
+                    horses[i].summary = 0;
                     for(var j=0;j<results.length;j++){
                         if(horses[i]._id == results[j].horse._id){
                             horses[i].overalls.push(results[j].overall);
@@ -66,8 +67,9 @@ var adminManager = function() {
                 }
                 /*******************************************/
                 //Bubble sorting array with horses and their summary points
+                var zamiana = false;
                 do{
-                    var zamiana = false;
+                    zamiana = false;
                     for( i = 0; i < horses.length -1 ; i++){
                         var horse1 = horses[i];
                         var horse2 = horses[i+1];
@@ -97,14 +99,14 @@ var adminManager = function() {
 						var competitionHorse = {};
 						competitionHorse.overallPoints = [];
 						competitionHorse.summary = 0;
-						competitionHorse.name;
-						for(j=0;j<results.length;j++){
-							if(horses[l]._id == results[j].horse._id && results[j].competition._id == competitions[i]._id){
+						competitionHorse.name = null;
+						for(var a=0;a<results.length;a++){
+							if(horses[l]._id == results[a].horse._id && results[a].competition._id == competitions[i]._id){
 								exists = true;
 								competitionHorse.name = horses[l].horseName;
 								competitionHorse.firstName = horses[l].ownerFirstName;
 								competitionHorse.lastName = horses[l].ownerLastName;
-								competitionHorse.overallPoints.push(results[j].overall);
+								competitionHorse.overallPoints.push(results[a].overall);
 							}
 						}
 						if(exists){
@@ -142,11 +144,11 @@ var adminManager = function() {
 						"bAutoWidth": false,
 						
 					} );
-				})
+				});
                 searchLogic();
-            })
+            });
         });
-    }
+    };
     
     //
     showList();
@@ -163,7 +165,7 @@ var adminManager = function() {
 			//Creating summary of points for every horse
 			for(var i = 0; i < horses.length; i++){
 				horses[i].overalls = [];
-				horses[i].summary;
+				horses[i].summary = 0;
 				for(var j=0;j<results.length;j++){
 					if(horses[i]._id == results[j].horse._id){
 						horses[i].overalls.push(results[j].overall);
@@ -176,8 +178,9 @@ var adminManager = function() {
 			}
 			/*******************************************/
 			//Bubble sorting array with horses and their summary points
+           var zamiana = false;
 			do{
-				var zamiana = false;
+				zamiana = false;
 				for( i = 0; i < horses.length -1 ; i++){
 					var horse1 = horses[i];
 					var horse2 = horses[i+1];
@@ -208,14 +211,14 @@ var adminManager = function() {
 					var competitionHorse = {};
 					competitionHorse.overallPoints = [];
 					competitionHorse.summary = 0;
-					competitionHorse.name;
-					for(j=0;j<results.length;j++){
-						if(horses[l]._id == results[j].horse._id && results[j].competition._id == competitions[i]._id){
+					competitionHorse.name = null;
+					for(var a=0;a<results.length;a++){
+						if(horses[l]._id == results[a].horse._id && results[a].competition._id == competitions[i]._id){
 							exists = true;
 							competitionHorse.name = horses[l].horseName;
 							competitionHorse.firstName = horses[l].ownerFirstName;
 							competitionHorse.lastName = horses[l].ownerLastName;
-							competitionHorse.overallPoints.push(results[j].overall);
+							competitionHorse.overallPoints.push(results[a].overall);
 						}
 					}
 					if(exists){
@@ -257,7 +260,7 @@ var adminManager = function() {
 					} );
 				});
 			searchLogic();
-		})
+		});
     });
     //
     
@@ -335,14 +338,14 @@ var adminManager = function() {
                 });
             });
         });
-    }
+    };
 
     /************************************************************/
     //REFEREE ADD EVENT(GET AND POST)
     $('a#refereeAdd').each(function() {
         $(this).on('click', function(e) {
             e.preventDefault();
-            var requestUrl = $(this).attr('href');;
+            var requestUrl = $(this).attr('href');
             $.ajax({
                 url: requestUrl,
                 method: 'GET',
@@ -413,7 +416,7 @@ var adminManager = function() {
 
         });
         });
-    }
+    };
 
     /******************************HORSE MANAGEMENT*****************************/
     /************************************************************/
@@ -491,14 +494,14 @@ var adminManager = function() {
             });
         });
         });
-    }
+    };
 
     /************************************************************/
     //HORSE ADD EVENT(GET AND POST)
     $('a#horseAdd').each(function() {
         $(this).on('click', function(e) {
             e.preventDefault();
-            var requestUrl = $(this).attr('href');;
+            var requestUrl = $(this).attr('href');
             $.ajax({
                 url: requestUrl,
                 method: 'GET',
@@ -568,7 +571,7 @@ var adminManager = function() {
 
             });
         });
-    }
+    };
 
     /************************COMPETITION MANAGEMENT*****************************/
 
@@ -630,8 +633,8 @@ var adminManager = function() {
                         $('select#horsesList').attr('disabled', 'disabled');
                     }
                     //
-                    competitionData['horses'] = [];
-                    competitionData['referees'] = [];
+                    competitionData.horses = [];
+                    competitionData.referees = [];
                     var refereesForGrouping = [];
                     var horsesForGrouping = [];
                     var maresForGroup = [];
@@ -650,7 +653,7 @@ var adminManager = function() {
                             console.log('MARES ADDED');
                             maresForGroup.push($(this).val());
                         }
-                        competitionData['horses'].push($(this).val());
+                        competitionData.horses.push($(this).val());
                         horsesForGrouping.push(horse.id);
                     });
                     //
@@ -660,16 +663,16 @@ var adminManager = function() {
                             id: $(this).val(),
                             name: $(this).text()
                         };
-                        competitionData['referees'].push($(this).val());
+                        competitionData.referees.push($(this).val());
                         refereesForGrouping.push(referee);
                     });
                     //
                     //print both arrays
-                    console.log(competitionData['horses']);
-                    console.log(competitionData['referees']);
+                    console.log(competitionData.horses);
+                    console.log(competitionData.referees);
                     //
                     //Create options for selecting horses in group number
-                    for (var i = 1; i <= competitionData['horses'].length; i++) {
+                    for (var i = 1; i <= competitionData.horses.length; i++) {
                         $('select#horsesInGroupNumber').append('<option value="' + i + '">' + i + '</option>');
                     }
                     // 
@@ -679,25 +682,25 @@ var adminManager = function() {
                     //referees in group number
                     $('select#horsesInGroupNumber').change(function() {
                         groupsNumber = 0;
-                        horsesInGroupNumber = $(this).val();
+                        var horsesInGroupNumber = $(this).val();
                         $('select#refereesInGroupNumber > option').remove();
                         console.log('NUMER OF HORSES:' + horsesInGroupNumber);
-                        var j = competitionData['horses'].length;
+                        var j = competitionData.horses.length;
                         while (j >= horsesInGroupNumber) {
                             j -= horsesInGroupNumber;
                             groupsNumber++;
                         }
                         console.log(groupsNumber);
-                        var divider = competitionData['referees'].length / groupsNumber;
+                        var divider = competitionData.referees.length / groupsNumber;
                         for (var i = 1; i <= divider; i++) {
                             $('select#refereesInGroupNumber').append('<option value="' + i + '">' + i + '</option>');
                         }
                     });
                     //
                     $('select#refereesInGroupNumber').change(function() {
-                        refereesInGroupNumber = $(this).val();
+                        var refereesInGroupNumber = $(this).val();
                         console.log('NUMER OF REFEREES:' + refereesInGroupNumber);
-                        if ($(this).val() !== null && (competitionData['horses'].length <= competitionData['referees'].length)) {}//TO - DO
+                        if ($(this).val() !== null && (competitionData.horses.length <= competitionData.referees.length)) {}//TO - DO
                     });
                     //
                     //
@@ -707,8 +710,8 @@ var adminManager = function() {
                         var data = {};
                         data.name = $('input#name').val();
                         console.log(data.name);
-                        data.referees = competitionData['referees'];
-                        data.horses = competitionData['horses'];
+                        data.referees = competitionData.referees;
+                        data.horses = competitionData.horses;
                         data.groupsNumber = groupsNumber;
                         data.horsesInGroupNumber = horsesInGroupNumber;
                         data.refereesInGroupNumber = refereesInGroupNumber;
@@ -827,7 +830,7 @@ var adminManager = function() {
                 });
             });
         });
-    }  
+    };  
     
     /************************************************************/
     //SHOWS ACTIVE COMPETITION 
@@ -911,14 +914,13 @@ var adminManager = function() {
         });
     });
     
-}
+};
 
 /***************************************************************************/
-$(document).ready(function() {
+$(function() {
     console.log('document ready');
     adminManager();
     $('div#content-panel').bind('destroyed', function() {
         console.log('dom changed');
-        adminManager;
     });
 });
